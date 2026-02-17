@@ -34,7 +34,7 @@ install_linux() {
 
   info "Updating apt and installing base packages..."
   sudo apt update
-  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc libasound2-dev libasound2-plugins libportaudio2 portaudio19-dev pulseaudio pulseaudio-utils python3-dev
+  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc libasound2-dev libasound2-plugins libportaudio2 portaudio19-dev  python3-dev
 
   # Node.js via nodesource
   if ! command_exists node; then

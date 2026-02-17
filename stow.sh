@@ -2,6 +2,8 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# remove zshrc
+rm ~/.zshrc
 for pkg in zsh tmux helix claude copilot gemini; do
   stow -v -R -t "$HOME" "$pkg"
 done
