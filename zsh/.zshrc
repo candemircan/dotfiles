@@ -1,9 +1,9 @@
 [ -f ~/.zsh_secrets ] && source ~/.zsh_secrets
 
-# 1. Performance: Skip slow security checks
+#  Performance: Skip slow security checks
 export ZSH_DISABLE_COMPFIX="true"
 
-# 2. Performance: Smarter Path Management (Avoid duplicates)
+# Performance: Smarter Path Management (Avoid duplicates)
 typeset -U path  # Keep path unique
 path=(
     ~/.local/bin
@@ -14,7 +14,7 @@ path=(
     $path
 )
 
-# 3. Completion Cache Logic (DO THIS ONCE)
+# Completion Cache Logic (DO THIS ONCE)
 autoload -Uz compinit
 if [[ -n "${ZDOTDIR:-$HOME}/.zcompdump"(#qN.mh+24) ]]; then
   compinit
@@ -22,7 +22,7 @@ else
   compinit -C
 fi
 
-# 4. Oh My Zsh Setup
+# Oh My Zsh Setup
 export ZSH="$HOME/.oh-my-zsh"
 zstyle ':omz:update' mode disabled
 ZSH_THEME="" # Using Starship instead
@@ -30,8 +30,6 @@ plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
-# 5. External Tool Loading
-# fzf: homebrew/git install uses ~/.fzf.zsh, apt puts files in /usr/share/doc/fzf/examples/
 if [ -f ~/.fzf.zsh ]; then
   source ~/.fzf.zsh
 elif [ -d /usr/share/doc/fzf/examples ]; then
@@ -54,10 +52,6 @@ count() {
     fi
 }
 
-# 7. Prompt (Must be at the very bottom)
-eval "$(starship init zsh)"
-
-
 # AI assistant function
 aido() {
     copilot -p "$*" --allow-all-tools
@@ -65,3 +59,5 @@ aido() {
 ai() {
     copilot -p "$*"
 }
+
+eval "$(starship init zsh)"

@@ -13,13 +13,14 @@ for pkg in zsh tmux helix kitty claude copilot gemini; do
   stow -v -R -t "$HOME" "$pkg"
 done
 
-# Link skills into ~/.claude/skills/ and ~/.copilot/skills/
-mkdir -p "$HOME/.claude/skills" "$HOME/.copilot/skills"
+# Link skills into ~/.claude/skills/, ~/.copilot/skills/, and ~/.opencode/skills/
+mkdir -p "$HOME/.claude/skills" "$HOME/.copilot/skills" "$HOME/.opencode/skills"
 for skill_dir in "$HOME/.agent-skills"/*/; do
   [ -d "$skill_dir" ] || continue
   skill_name=$(basename "$skill_dir")
   ln -sfn "$skill_dir" "$HOME/.claude/skills/$skill_name"
   ln -sfn "$skill_dir" "$HOME/.copilot/skills/$skill_name"
+  ln -sfn "$skill_dir" "$HOME/.opencode/skills/$skill_name"
 done
 
 echo "All packages stowed and skills linked."

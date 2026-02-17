@@ -1,3 +1,7 @@
+---
+name: docments-to-docstrings
+description: Convert docments-style inline comments on function parameters to Google-style docstrings across a Python package.
+---
 # Skill: docments-to-docstrings
 
 Convert docments-style inline `#` comments on function parameters to Google-style docstrings across a Python package.
