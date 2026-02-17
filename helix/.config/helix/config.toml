@@ -20,15 +20,21 @@ R = ":reload"
 C-g = [
     ":write-all",
     ":insert-output lazygit >/dev/tty",
+    ':insert-output echo "\x1b[?1049h\x1b[?2004h" > /dev/tty',
     ":redraw",
-    ":reload-all"
+    ":reload-all",
+    ":set mouse false",
+    ":set mouse true",
 ]
 
 C-r = [
     ":write-all",
     ":insert-output serpl >/dev/tty",
+    ':insert-output echo "\x1b[?1049h\x1b[?2004h" > /dev/tty',
     ":redraw",
-    ":reload-all"
+    ":reload-all",
+    ":set mouse false",
+    ":set mouse true",
 ]
 C-y = [
   ':sh rm -f /tmp/unique-file',
