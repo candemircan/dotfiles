@@ -1,18 +1,3 @@
 {
-  "mcpServers": {
-    "voicemode": {
-      "type": "local",
-      "command": "uvx",
-      "tools": [
-        "*"
-      ],
-      "args": [
-        "--refresh",
-        "voice-mode"
-      ],
-      "env": {
-        "TTS_VOICE": "bm_fable"
-      }
-    }
-  }
+  "mcpServers": {}
 }

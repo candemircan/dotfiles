@@ -38,7 +38,7 @@ install_linux() {
 
   info "Updating apt and installing base packages..."
   sudo apt update
-  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc libasound2-dev libasound2-plugins libportaudio2 portaudio19-dev  python3-dev kitty
+  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty
 
   # Node.js via nodesource
   if ! command_exists node; then
@@ -166,10 +166,9 @@ install_common() {
   curl -fsSL https://gh.io/copilot-install | bash
   yes | npm install -g @google/gemini-cli 2>/dev/null || warn "gemini-cli install failed (check package name)"
 
-  # VoiceMode
-  info "Installing VoiceMode..."
-  echo "no" | uvx voice-mode-install --yes 2>/dev/null || warn "VoiceMode install failed"
-  warn "VoiceMode local services not installed — run 'uvx voice-mode-install' to configure for this machine"
+  # python stuff
+  uv tool install ruff
+  uv tool install python-lsp-server
 
 }
 
@@ -193,10 +192,6 @@ post_install() {
     info "Setting kitty as default terminal..."
     sudo update-alternatives --set x-terminal-emulator "$(command -v kitty)" 2>/dev/null || warn "Could not set kitty as default terminal"
   fi
-
-  # Install VoiceMode plugin for Claude Code
-  info "Installing VoiceMode plugin for Claude Code..."
-  claude mcp add voicemode -- uvx --refresh voice-mode 2>/dev/null || warn "Claude VoiceMode MCP setup failed"
 
   # TPM plugin install
   if [ -f "$HOME/.tmux/plugins/tpm/bin/install_plugins" ]; then

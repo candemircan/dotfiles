@@ -26,9 +26,9 @@ To only symlink without installing anything:
 | `tmux`   | TPM, vi-mode copy, flexoki dark theme                 |
 | `helix`  | Gruvbox dark, lazygit/yazi/serpl keybinds, LSP config |
 | `claude` | Global CLAUDE.md, agent skills                        |
-| `copilot`| MCP server config (VoiceMode)                         |
-| `gemini` | MCP server config (VoiceMode)                         |
+| `copilot`| MCP server config                                     |
+| `gemini` | MCP server config                                     |
 
 ## Tools installed
 
-Homebrew, stow, uv, helix, tmux, zsh, fzf, starship, btop, yazi, lazygit, serpl, node, kitty, Firefox, Brave, VS Code, Claude Code, GitHub Copilot, Google Gemini CLI, VoiceMode.
+Homebrew, stow, uv, helix, tmux, zsh, fzf, starship, btop, yazi, lazygit, serpl, node, kitty, Firefox, Brave, VS Code, Claude Code, GitHub Copilot, Google Gemini CLI.
