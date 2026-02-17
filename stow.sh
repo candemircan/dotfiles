@@ -2,9 +2,14 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-# remove zshrc
-rm ~/.zshrc
-for pkg in zsh tmux helix claude copilot gemini; do
+# back up existing .zshrc if it's a real file (not a symlink from a previous stow)
+if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
+  mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
+  echo "Backed up existing .zshrc to .zshrc.bak"
+elif [ -L "$HOME/.zshrc" ]; then
+  rm "$HOME/.zshrc"
+fi
+for pkg in zsh tmux helix kitty claude copilot gemini; do
   stow -v -R -t "$HOME" "$pkg"
 done
 

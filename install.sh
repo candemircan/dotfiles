@@ -25,7 +25,11 @@ install_macos() {
   brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node
 
   info "Installing Homebrew casks..."
-  brew install --cask firefox brave-browser visual-studio-code rectangle alfred
+  brew install --cask firefox brave-browser visual-studio-code rectangle alfred kitty
+
+  # Nerd Fonts
+  info "Installing RobotoMono Nerd Font..."
+  brew install --cask font-roboto-mono-nerd-font
 }
 
 # ---------- Linux (deb-based) ----------
@@ -34,7 +38,7 @@ install_linux() {
 
   info "Updating apt and installing base packages..."
   sudo apt update
-  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc libasound2-dev libasound2-plugins libportaudio2 portaudio19-dev  python3-dev
+  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc libasound2-dev libasound2-plugins libportaudio2 portaudio19-dev  python3-dev kitty
 
   # Node.js via nodesource
   if ! command_exists node; then
@@ -47,6 +51,7 @@ install_linux() {
   if ! command_exists uv; then
     info "Installing uv..."
     curl -LsSf https://astral.sh/uv/install.sh | sh
+    export PATH="$HOME/.local/bin:$PATH"
   fi
 
   # Helix
@@ -112,6 +117,17 @@ install_linux() {
     sudo apt install -y code
   fi
 
+  # Nerd Fonts
+  if ! fc-list | grep -qi "RobotoMono Nerd Font"; then
+    info "Installing RobotoMono Nerd Font..."
+    NERD_FONT_DIR="$HOME/.local/share/fonts/NerdFonts"
+    mkdir -p "$NERD_FONT_DIR"
+    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/RobotoMono.zip -o /tmp/RobotoMono.zip
+    unzip -o /tmp/RobotoMono.zip -d "$NERD_FONT_DIR"
+    rm /tmp/RobotoMono.zip
+    fc-cache -fv
+  fi
+
   # Clipboard tools for tmux
   if [ "${XDG_SESSION_TYPE:-}" = "wayland" ]; then
     sudo apt install -y wl-clipboard
@@ -148,14 +164,13 @@ install_common() {
   # cli agents
   curl -fsSL https://claude.ai/install.sh | bash
   curl -fsSL https://gh.io/copilot-install | bash
-  npm install -g @google/gemini-cli 2>/dev/null || warn "gemini-cli install failed (check package name)"
+  yes | npm install -g @google/gemini-cli 2>/dev/null || warn "gemini-cli install failed (check package name)"
 
   # VoiceMode
   info "Installing VoiceMode..."
-  uvx voice-mode-install --yes 2>/dev/null || warn "VoiceMode install failed"
+  echo "no" | uvx voice-mode-install --yes 2>/dev/null || warn "VoiceMode install failed"
+  warn "VoiceMode local services not installed — run 'uvx voice-mode-install' to configure for this machine"
 
-  # kitty
-  curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
 }
 
 # ---------- Post-install ----------

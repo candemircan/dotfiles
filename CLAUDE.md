@@ -8,6 +8,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 
 - `zsh/` — `.zshrc` (Oh My Zsh, fzf, starship, aliases)
 - `tmux/` — `.tmux.conf` (TPM, vi-mode, flexoki dark theme)
+- `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font)
 - `helix/` — `.config/helix/` (gruvbox dark, custom keybinds, LSP config)
 - `claude/` — `.claude/CLAUDE.md` + agent skills (`baklavacutter`, `docments-to-docstrings`)
 - `copilot/` — `.copilot/mcp-config.json`

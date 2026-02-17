@@ -31,7 +31,13 @@ plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
 # 5. External Tool Loading
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# fzf: homebrew/git install uses ~/.fzf.zsh, apt puts files in /usr/share/doc/fzf/examples/
+if [ -f ~/.fzf.zsh ]; then
+  source ~/.fzf.zsh
+elif [ -d /usr/share/doc/fzf/examples ]; then
+  source /usr/share/doc/fzf/examples/key-bindings.zsh
+  source /usr/share/doc/fzf/examples/completion.zsh
+fi
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 
