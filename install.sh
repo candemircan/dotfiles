@@ -164,6 +164,7 @@ install_common() {
   # cli agents
   curl -fsSL https://claude.ai/install.sh | bash
   curl -fsSL https://gh.io/copilot-install | bash
+  curl -fsSL https://opencode.ai/install | bash
   yes | npm install -g @google/gemini-cli 2>/dev/null || warn "gemini-cli install failed (check package name)"
 
   # python stuff

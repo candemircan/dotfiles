@@ -9,18 +9,29 @@ if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
 elif [ -L "$HOME/.zshrc" ]; then
   rm "$HOME/.zshrc"
 fi
-for pkg in zsh tmux helix kitty claude copilot gemini; do
+for pkg in zsh tmux helix kitty claude; do
   stow -v -R -t "$HOME" "$pkg"
 done
 
-# Link skills into ~/.claude/skills/, ~/.copilot/skills/, and ~/.opencode/skills/
-mkdir -p "$HOME/.claude/skills" "$HOME/.copilot/skills" "$HOME/.opencode/skills"
+# Link skills into each agent's skills directory
+SKILL_DIRS=(
+  "$HOME/.claude/skills"
+  "$HOME/.copilot/skills"
+  "$HOME/.gemini/skills"
+  "$HOME/.config/opencode/skills"
+)
+mkdir -p "${SKILL_DIRS[@]}"
 for skill_dir in "$HOME/.agent-skills"/*/; do
   [ -d "$skill_dir" ] || continue
   skill_name=$(basename "$skill_dir")
-  ln -sfn "$skill_dir" "$HOME/.claude/skills/$skill_name"
-  ln -sfn "$skill_dir" "$HOME/.copilot/skills/$skill_name"
-  ln -sfn "$skill_dir" "$HOME/.opencode/skills/$skill_name"
+  for dest in "${SKILL_DIRS[@]}"; do
+    ln -sfn "$skill_dir" "$dest/$skill_name"
+  done
 done
 
-echo "All packages stowed and skills linked."
+# Symlink shared instructions to each agent's expected path
+ln -sfn "$HOME/.claude/CLAUDE.md" "$HOME/.copilot/copilot-instructions.md"
+ln -sfn "$HOME/.claude/CLAUDE.md" "$HOME/.gemini/GEMINI.md"
+ln -sfn "$HOME/.claude/CLAUDE.md" "$HOME/.config/opencode/AGENTS.md"
+
+echo "All packages stowed, skills linked, and agent instructions symlinked."

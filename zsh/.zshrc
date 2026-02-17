@@ -53,11 +53,8 @@ count() {
 }
 
 # AI assistant function
-aido() {
-    copilot -p "$*" --allow-all-tools
-}
 ai() {
-    copilot -p "$*"
+    opencode run "$*"
 }
 
 eval "$(starship init zsh)"

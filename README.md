@@ -25,10 +25,8 @@ To only symlink without installing anything:
 | `zsh`    | Oh My Zsh, fzf, starship prompt, aliases              |
 | `tmux`   | TPM, vi-mode copy, flexoki dark theme                 |
 | `helix`  | Gruvbox dark, lazygit/yazi/serpl keybinds, LSP config |
-| `claude` | Global CLAUDE.md, agent skills                        |
-| `copilot`| MCP server config                                     |
-| `gemini` | MCP server config                                     |
+| `claude` | Shared coding guidelines + agent skills (all 4 agents) |
 
 ## Tools installed
 
-Homebrew, stow, uv, helix, tmux, zsh, fzf, starship, btop, yazi, lazygit, serpl, node, kitty, Firefox, Brave, VS Code, Claude Code, GitHub Copilot, Google Gemini CLI.
+Homebrew, stow, uv, helix, tmux, zsh, fzf, starship, btop, yazi, lazygit, serpl, node, kitty, Firefox, Brave, VS Code, Claude Code, GitHub Copilot, Gemini CLI, OpenCode.
