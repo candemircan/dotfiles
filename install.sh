@@ -153,6 +153,9 @@ install_common() {
   # VoiceMode
   info "Installing VoiceMode..."
   uvx voice-mode-install --yes 2>/dev/null || warn "VoiceMode install failed"
+
+  # kitty
+  curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
 }
 
 # ---------- Post-install ----------
@@ -168,6 +171,12 @@ post_install() {
       echo "$ZSH_PATH" | sudo tee -a /etc/shells
     fi
     chsh -s "$ZSH_PATH"
+  fi
+
+  # Set kitty as default terminal (Linux)
+  if [ "$OS" = "Linux" ] && command_exists kitty; then
+    info "Setting kitty as default terminal..."
+    sudo update-alternatives --set x-terminal-emulator "$(command -v kitty)" 2>/dev/null || warn "Could not set kitty as default terminal"
   fi
 
   # Install VoiceMode plugin for Claude Code
