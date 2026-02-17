@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "voicemode": {
+      "command": "uvx",
+      "args": [
+        "--refresh",
+        "voice-mode"
+      ],
+      "env": {
+        "TTS_VOICE": "bm_fable"
+      }
+    }
+  }
+}

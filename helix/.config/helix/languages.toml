@@ -1,0 +1,30 @@
+[language-server.pylsp]
+command = "pylsp"
+
+[language-server.ruff]
+command = "ruff"
+args = ["server"]
+
+[[language]]
+name="bash"
+file-types = [
+    "sh", 
+    "slurm", 
+    "zsh", 
+    ".zshrc",    
+    { glob = ".zshrc" },
+    { glob = ".zprofile" },
+    { glob = ".zshenv" },
+    { glob = ".bashrc" },
+    { glob = ".profile" },
+    { glob = ".bash_profile" },
+]
+[[language]]
+name = "python"
+roots = ["pyproject.toml", "setup.py", "requirements.txt", ".venv/"]
+language-servers = ["pylsp", "ruff"]
+
+[[language]]
+name = "markdown"
+file-types = ["md", "markdown", "qmd"]
+comment-tokens = ["-", "+", "*", "- [ ]", ">"]
