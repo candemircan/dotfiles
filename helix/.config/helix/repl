@@ -1,0 +1,11 @@
+#!/bin/zsh
+# Send selection to REPL in tmux pane to the right
+
+if [ -n "$1" ]; then
+    tmux load-buffer - <<< "$1"
+else
+    tmux load-buffer -
+fi
+
+tmux paste-buffer -dpr -t right
+tmux send-keys -t right Enter
