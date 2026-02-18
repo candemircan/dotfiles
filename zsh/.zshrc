@@ -40,6 +40,7 @@ fi
 
 
 export GEMINI_SANDBOX=true
+export claudemd=~/.claude/CLAUDE.md
 export EDITOR=hx
 alias py='python -m pdb -c c'
 
