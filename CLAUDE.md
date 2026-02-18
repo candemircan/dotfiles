@@ -11,6 +11,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 - `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font)
 - `helix/` — `.config/helix/` (gruvbox dark, custom keybinds, LSP config)
 - `claude/` — `.claude/CLAUDE.md` (shared coding guidelines) + agent skills (`baklavacutter`, `docments-to-docstrings`)
+- `opencode/` — `.config/opencode/` (opencode.json config, package.json plugin deps)
 
 ## Scripts
 

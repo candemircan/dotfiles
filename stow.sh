@@ -9,7 +9,7 @@ if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
 elif [ -L "$HOME/.zshrc" ]; then
   rm "$HOME/.zshrc"
 fi
-for pkg in zsh tmux helix kitty claude; do
+for pkg in zsh tmux helix kitty claude opencode; do
   stow -v -R -t "$HOME" "$pkg"
 done
 
