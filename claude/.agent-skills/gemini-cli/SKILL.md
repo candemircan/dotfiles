@@ -27,8 +27,6 @@ gemini -p "@src/ Summarise the architecture"
 # Multiple targets
 gemini -p "@src/ @tests/ What is the test coverage for the training pipeline?"
 
-# Entire project
-gemini --all_files -p "Give me an overview of this project"
 ```
 
 ## Example prompts for Python projects
