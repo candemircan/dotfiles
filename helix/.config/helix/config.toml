@@ -38,9 +38,9 @@ C-r = [
 ]
 C-y = [
   ':sh rm -f /tmp/unique-file',
-  ':insert-output yazi  --chooser-file=/tmp/unique-file',
+  ':insert-output yazi --chooser-file=/tmp/unique-file >/dev/tty',
   ':insert-output echo "\x1b[?1049h\x1b[?2004h" > /dev/tty',
-  ':open %sh{cat /tmp/unique-file}',
+  ':sh open "$(cat /tmp/unique-file)" 2>/dev/null || true',
   ':redraw',
   ':set mouse false',
   ':set mouse true',
