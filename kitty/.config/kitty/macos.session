@@ -1,0 +1,8 @@
+new_tab local
+launch zsh -c "tmux attach || tmux new"
+
+new_tab juwels
+launch zsh
+
+new_tab hpc
+launch zsh
