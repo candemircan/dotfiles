@@ -1,0 +1,6 @@
+#!/bin/zsh
+tmux new-session -d -s default -n main
+tmux new-window -t default:9
+tmux send-keys -t default:9 'btop' Enter
+tmux select-window -t default:1
+tmux attach-session -t default

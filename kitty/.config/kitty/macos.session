@@ -1,8 +1,2 @@
 new_tab local
-launch zsh -c "tmux attach || tmux new"
-
-new_tab juwels
-launch zsh
-
-new_tab hpc
-launch zsh
+launch zsh -c "tmux attach-session -t default 2>/dev/null || ~/.local/bin/tmux-init-default"

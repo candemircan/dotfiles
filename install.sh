@@ -22,7 +22,7 @@ install_macos() {
   fi
 
   info "Installing Homebrew formulae..."
-  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node
+  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide
 
   info "Installing Homebrew casks..."
   brew install --cask firefox brave-browser visual-studio-code rectangle alfred kitty
@@ -85,6 +85,12 @@ install_linux() {
     tar xf /tmp/lazygit.tar.gz -C /tmp lazygit
     sudo mv /tmp/lazygit /usr/local/bin/
     rm /tmp/lazygit.tar.gz
+  fi
+
+  # Zoxide
+  if ! command_exists zoxide; then
+    info "Installing zoxide..."
+    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
   fi
 
   # serpl (via cargo)

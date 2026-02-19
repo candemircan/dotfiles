@@ -10,9 +10,9 @@ cd dotfiles
 ./install.sh
 ```
 
-`install.sh` installs all dependencies (Homebrew, CLI tools, editors, AI agents, plugins) and symlinks configs via `stow.sh`.
+`install.sh` installs all dependencies (Homebrew, CLI tools, editors, AI agents) and symlinks configs via `stow.sh`.
 
-To only symlink without installing anything:
+To only symlink without installing:
 
 ```bash
 ./stow.sh
@@ -20,13 +20,31 @@ To only symlink without installing anything:
 
 ## What's included
 
-| Package  | What it configures                                    |
-|----------|-------------------------------------------------------|
-| `zsh`    | Oh My Zsh, fzf, starship prompt, aliases              |
-| `tmux`   | TPM, vi-mode copy, flexoki dark theme                 |
-| `helix`  | Gruvbox dark, lazygit/yazi/serpl keybinds, LSP config |
+| Package | What it configures |
+|---|---|
+| `zsh` | Oh My Zsh, fzf, zoxide, starship, aliases, local scripts |
+| `tmux` | Prefix `C-a`, TPM, resurrect/continuum, sessionizer, popups, flexoki dark |
+| `helix` | Gruvbox dark, REPL pipe to ipython, serpl, LSP config |
+| `kitty` | RobotoMono Nerd Font, gruvbox theme, boots into tmux |
 | `claude` | Shared coding guidelines + agent skills (all 4 agents) |
+| `opencode` | opencode.json config + plugin deps |
 
 ## Tools installed
 
-Homebrew, stow, uv, helix, tmux, zsh, fzf, starship, btop, yazi, lazygit, serpl, node, kitty, Firefox, Brave, VS Code, Claude Code, GitHub Copilot, Gemini CLI, OpenCode.
+`stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide` via Homebrew (macOS) or apt/curl (Linux), plus kitty, Firefox, Brave, VS Code, Claude Code, GitHub Copilot, Gemini CLI, OpenCode.
+
+## One-time setup after install
+
+```bash
+# 1. Install tmux plugins (inside a tmux session)
+C-a I
+
+# 2. Set your Obsidian vault path (gitignored, device-specific)
+echo 'export vault="/path/to/your/ObsidianVault"' >> ~/.zsh_secrets
+```
+
+See [CHEATSHEET.md](CHEATSHEET.md) for all keybindings.
+
+## TODO
+
+- [ ] Test SSH auto-attach: `ssh somehost` should auto-attach to (or create) a remote tmux session

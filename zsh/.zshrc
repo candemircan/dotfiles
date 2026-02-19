@@ -61,4 +61,24 @@ ai() {
 }
 
 eval "$(starship init zsh)"
+
+# Zoxide (jump with z)
+eval "$(zoxide init zsh)"
+
+# SSH: auto-attach to tmux on remote hosts
+ssh() {
+    if [[ $# -eq 1 ]]; then
+        command ssh -t "$1" -- 'tmux attach 2>/dev/null || tmux new-session 2>/dev/null || $SHELL'
+    else
+        command ssh "$@"
+    fi
+}
+
+# Obsidian note search — $vault must be exported in ~/.zsh_secrets
+sn() {
+    note=$(cd "$vault" && find . -name "*.md" 2>/dev/null | sed 's|^\./||' | fzf --prompt="Note: ")
+    [ -z "$note" ] && return
+    hx "$vault/$note"
+}
+
 setopt GLOB_DOTS

@@ -1,0 +1,3 @@
+#!/bin/zsh
+source ~/.zsh_secrets 2>/dev/null
+hx "$vault/Inbox.md"

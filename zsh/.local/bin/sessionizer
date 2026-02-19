@@ -1,0 +1,22 @@
+#!/bin/zsh
+source ~/.zshrc 2>/dev/null
+
+selected=$(
+    { find "$HOME/Projects" -mindepth 1 -maxdepth 1 -type d
+      find "$HOME/Projects/cpi" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+    } | fzf --prompt="  "
+)
+[ -z "$selected" ] && exit 0
+
+name=$(basename "$selected" | tr '. ' '__')
+
+if ! tmux has-session -t "$name" 2>/dev/null; then
+    tmux new-session -d -s "$name" -c "$selected"
+    [[ -f "$selected/.venv/bin/activate" ]] && tmux send-keys -t "$name":1 "source .venv/bin/activate" Enter
+    tmux new-window  -t "$name"
+    tmux new-window  -t "$name"
+    tmux link-window -s default:9 -t "$name":9
+    tmux select-window -t "$name":1
+fi
+
+tmux switch-client -t "$name"

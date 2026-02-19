@@ -1,6 +1,8 @@
 theme = "gruvbox_dark_soft"
 [keys.normal." "]
 z = ":pipe-to zsh ~/.config/helix/repl"
+q = ":quit"
+x = ":x"
 [keys.select." "]
 z = ":pipe-to zsh ~/.config/helix/repl"
 [editor]
@@ -17,16 +19,6 @@ select = "underline"
 hidden = false
 [keys.normal]
 R = ":reload"
-C-g = [
-    ":write-all",
-    ":insert-output lazygit >/dev/tty",
-    ':insert-output echo "\x1b[?1049h\x1b[?2004h" > /dev/tty',
-    ":redraw",
-    ":reload-all",
-    ":set mouse false",
-    ":set mouse true",
-]
-
 C-r = [
     ":write-all",
     ":insert-output serpl >/dev/tty",
@@ -35,13 +27,4 @@ C-r = [
     ":reload-all",
     ":set mouse false",
     ":set mouse true",
-]
-C-y = [
-  ':sh rm -f /tmp/unique-file',
-  ':insert-output yazi --chooser-file=/tmp/unique-file >/dev/tty',
-  ':insert-output echo "\x1b[?1049h\x1b[?2004h" > /dev/tty',
-  ':sh open "$(cat /tmp/unique-file)" 2>/dev/null || true',
-  ':redraw',
-  ':set mouse false',
-  ':set mouse true',
 ]

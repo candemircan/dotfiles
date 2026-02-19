@@ -6,12 +6,22 @@ GNU Stow-based dotfiles repo for macOS and Linux.
 
 Each top-level directory is a stow package symlinked into `$HOME`:
 
-- `zsh/` — `.zshrc` (Oh My Zsh, fzf, starship, aliases)
-- `tmux/` — `.tmux.conf` (TPM, vi-mode, flexoki dark theme)
-- `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font)
-- `helix/` — `.config/helix/` (gruvbox dark, custom keybinds, LSP config)
+- `zsh/` — `.zshrc` (Oh My Zsh, fzf, zoxide, starship, aliases) + `.local/bin/` scripts
+- `tmux/` — `.tmux.conf` (prefix `C-a`, TPM, resurrect/continuum, flexoki dark theme)
+- `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into tmux)
+- `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)
 - `claude/` — `.claude/CLAUDE.md` (shared coding guidelines) + agent skills (`baklavacutter`, `docments-to-docstrings`)
 - `opencode/` — `.config/opencode/` (opencode.json config, package.json plugin deps)
+
+### `zsh/.local/bin/` scripts
+
+| Script | Purpose |
+|---|---|
+| `tmux-init-default` | Creates the `default` session (window 1 shell, window 9 btop) |
+| `sessionizer` | fzf over `~/Projects` + `~/Projects/cpi`; creates/attaches sessions, activates `.venv` |
+| `tmux-session-switcher` | fzf over open sessions; `Enter` switches, `Ctrl-X` kills |
+| `tmux-yazi` | Yazi chooser popup; text files → `hx`, others → system opener |
+| `tmux-obsidian` | Opens `$vault/Inbox.md` in helix (reads `~/.zsh_secrets`) |
 
 ## Scripts
 

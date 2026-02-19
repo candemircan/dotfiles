@@ -1,11 +1,22 @@
 #!/bin/zsh
-# Send selection to REPL in tmux pane to the right
+# Send selection to ipython REPL in tmux pane to the right
 
 if [ -n "$1" ]; then
     tmux load-buffer - <<< "$1"
 else
     tmux load-buffer -
 fi
+
+# Create right pane if window has only one pane, and start ipython
+if [ "$(tmux list-panes | wc -l)" -le 1 ]; then
+    tmux split-window -h
+    tmux send-keys -t right "uv run ipython" Enter
+    tmux select-pane -L
+    sleep 1.5
+fi
+
+# Unzoom if zoomed so REPL output is visible
+[ "$(tmux display-message -p '#{window_zoomed_flag}')" = "1" ] && tmux resize-pane -Z
 
 tmux paste-buffer -dpr -t right
 tmux send-keys -t right Enter

@@ -1,0 +1,18 @@
+#!/bin/zsh
+tmp=$(mktemp)
+yazi --chooser-file="$tmp" 2>/dev/null
+if [ -s "$tmp" ]; then
+    file=$(cat "$tmp")
+    mime=$(file --mime-type -b "$file")
+    case "$mime" in
+        text/*|application/json|application/xml|inode/x-empty)
+            tmux send-keys -t :1 "hx $(printf '%q' "$file")" Enter ;;
+        *)
+            if [[ "$(uname)" == "Darwin" ]]; then
+                open "$file"
+            else
+                xdg-open "$file" &>/dev/null &
+            fi ;;
+    esac
+fi
+rm -f "$tmp"
