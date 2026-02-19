@@ -23,7 +23,7 @@ To only symlink without installing:
 | Package | What it configures |
 |---|---|
 | `zsh` | Oh My Zsh, fzf, zoxide, starship, aliases, local scripts |
-| `tmux` | Prefix `C-a`, TPM, resurrect/continuum, sessionizer, popups, flexoki dark |
+| `tmux` | Prefix `C-a`, TPM, sessionizer, popups, flexoki dark |
 | `helix` | Gruvbox dark, REPL pipe to ipython, serpl, LSP config |
 | `kitty` | RobotoMono Nerd Font, gruvbox theme, boots into tmux |
 | `claude` | Shared coding guidelines + agent skills (all 4 agents) |
@@ -36,10 +36,7 @@ To only symlink without installing:
 ## One-time setup after install
 
 ```bash
-# 1. Install tmux plugins (inside a tmux session)
-C-a I
-
-# 2. Set your Obsidian vault path (gitignored, device-specific)
+# Set your Obsidian vault path (gitignored, device-specific)
 echo 'export vault="/path/to/your/ObsidianVault"' >> ~/.zsh_secrets
 ```
 

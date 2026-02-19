@@ -7,7 +7,7 @@ GNU Stow-based dotfiles repo for macOS and Linux.
 Each top-level directory is a stow package symlinked into `$HOME`:
 
 - `zsh/` — `.zshrc` (Oh My Zsh, fzf, zoxide, starship, aliases) + `.local/bin/` scripts
-- `tmux/` — `.tmux.conf` (prefix `C-a`, TPM, resurrect/continuum, flexoki dark theme)
+- `tmux/` — `.tmux.conf` (prefix `C-a`, TPM, flexoki dark theme)
 - `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into tmux)
 - `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)
 - `claude/` — `.claude/CLAUDE.md` (shared coding guidelines) + agent skills (`baklavacutter`, `docments-to-docstrings`)
