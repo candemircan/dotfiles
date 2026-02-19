@@ -14,13 +14,6 @@ path=(
     $path
 )
 
-# Completion Cache Logic (DO THIS ONCE)
-autoload -Uz compinit
-if [[ -n "${ZDOTDIR:-$HOME}/.zcompdump"(#qN.mh+24) ]]; then
-  compinit
-else
-  compinit -C
-fi
 
 # Oh My Zsh Setup
 export ZSH="$HOME/.oh-my-zsh"
@@ -29,6 +22,14 @@ ZSH_THEME="" # Using Starship instead
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
+
+autoload -Uz compinit
+
+if [[ -n "${ZDOTDIR:-$HOME}/.zcompdump"(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 
 if [ -f ~/.fzf.zsh ]; then
   source ~/.fzf.zsh
@@ -60,3 +61,4 @@ ai() {
 }
 
 eval "$(starship init zsh)"
+setopt GLOB_DOTS
