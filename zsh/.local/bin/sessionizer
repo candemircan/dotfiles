@@ -4,7 +4,7 @@ source ~/.zshrc 2>/dev/null
 selected=$(
     { find "$HOME/Projects" -mindepth 1 -maxdepth 1 -type d
       find "$HOME/Projects/cpi" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
-      find "$HOME/dotfiles" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+      echo "$HOME/dotfiles"
     } | fzf --prompt="  "
 )
 [ -z "$selected" ] && exit 0
