@@ -14,9 +14,10 @@ name=$(basename "$selected" | tr '. ' '__')
 if ! tmux has-session -t "$name" 2>/dev/null; then
     tmux new-session -d -s "$name" -c "$selected"
     [[ -f "$selected/.venv/bin/activate" ]] && tmux send-keys -t "$name":1 "source .venv/bin/activate" Enter
-    tmux new-window  -t "$name"
-    tmux new-window  -t "$name"
-    tmux link-window -s default:9 -t "$name":9
+    tmux new-window -t "$name" && [[ -f "$selected/.venv/bin/activate" ]] && tmux send-keys -t "$name":2 "source .venv/bin/activate" Enter
+    tmux new-window -t "$name" && [[ -f "$selected/.venv/bin/activate" ]] && tmux send-keys -t "$name":3 "source .venv/bin/activate" Enter
+    tmux new-window -t "$name" && [[ -f "$selected/.venv/bin/activate" ]] && tmux send-keys -t "$name":4 "source .venv/bin/activate" Enter
+    tmux link-window -a -s default:9 -t "$name":9 2>/dev/null || true
     tmux select-window -t "$name":1
 fi
 
