@@ -42,6 +42,3 @@ echo 'export vault="/path/to/your/ObsidianVault"' >> ~/.zsh_secrets
 
 See [CHEATSHEET.md](CHEATSHEET.md) for all keybindings.
 
-## TODO
-
-- [ ] Test SSH auto-attach: `ssh somehost` should auto-attach to (or create) a remote tmux session
