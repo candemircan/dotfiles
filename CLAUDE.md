@@ -35,7 +35,6 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 | Agent | Instructions | Skills |
 |---|---|---|
 | Claude Code | `~/.claude/CLAUDE.md` | `~/.claude/skills/` |
-| Copilot CLI | `~/.copilot/copilot-instructions.md` | `~/.copilot/skills/` |
 | Gemini CLI | `~/.gemini/GEMINI.md` | `~/.gemini/skills/` |
 | OpenCode | `~/.config/opencode/AGENTS.md` | `~/.config/opencode/skills/` |
 

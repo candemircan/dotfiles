@@ -16,7 +16,6 @@ done
 # Link skills into each agent's skills directory
 SKILL_DIRS=(
   "$HOME/.claude/skills"
-  "$HOME/.copilot/skills"
   "$HOME/.gemini/skills"
   "$HOME/.config/opencode/skills"
 )
@@ -30,7 +29,6 @@ for skill_dir in "$HOME/.agent-skills"/*/; do
 done
 
 # Symlink shared instructions to each agent's expected path
-ln -sfn "$HOME/.claude/CLAUDE.md" "$HOME/.copilot/copilot-instructions.md"
 ln -sfn "$HOME/.claude/CLAUDE.md" "$HOME/.gemini/GEMINI.md"
 ln -sfn "$HOME/.claude/CLAUDE.md" "$HOME/.config/opencode/AGENTS.md"
 
