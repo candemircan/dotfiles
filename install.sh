@@ -176,9 +176,18 @@ install_common() {
   fi
 
   # cli agents
-  curl -fsSL https://claude.ai/install.sh | bash
-  curl -fsSL https://opencode.ai/install | bash
-  yes | npm install -g @google/gemini-cli 2>/dev/null || warn "gemini-cli install failed (check package name)"
+  if ! command_exists claude; then
+    info "Installing Claude Code..."
+    curl -fsSL https://claude.ai/install.sh | bash
+  fi
+  if ! command_exists opencode; then
+    info "Installing OpenCode..."
+    curl -fsSL https://opencode.ai/install | bash
+  fi
+  if ! command_exists gemini; then
+    info "Installing Gemini CLI..."
+    yes | npm install -g @google/gemini-cli 2>/dev/null || warn "gemini-cli install failed (check package name)"
+  fi
 
   # python stuff
   uv tool install ruff
