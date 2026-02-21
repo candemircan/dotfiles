@@ -25,7 +25,7 @@ install_macos() {
   brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat ripgrep fd
 
   info "Installing Homebrew casks..."
-  brew install --cask firefox brave-browser visual-studio-code rectangle alfred kitty
+  brew install --cask firefox brave-browser visual-studio-code rectangle alfred kitty spotify
 
   # Nerd Fonts
   info "Installing RobotoMono Nerd Font..."
@@ -62,12 +62,17 @@ install_linux() {
     export PATH="$HOME/.local/bin:$PATH"
   fi
 
-  # Helix
+  # Helix (GitHub binary release)
   if ! command_exists hx; then
     info "Installing Helix..."
-    sudo add-apt-repository -y ppa:maveonair/helix-editor
-    sudo apt update
-    sudo apt install -y helix
+    HELIX_VERSION=$(curl -s https://api.github.com/repos/helix-editor/helix/releases/latest | grep -Po '"tag_name": "\K[^"]*')
+    curl -fsSL "https://github.com/helix-editor/helix/releases/download/${HELIX_VERSION}/helix-${HELIX_VERSION}-x86_64-linux.tar.xz" -o /tmp/helix.tar.xz
+    sudo mkdir -p /opt/helix
+    sudo tar xf /tmp/helix.tar.xz -C /opt/helix --strip-components=1
+    rm /tmp/helix.tar.xz
+    sudo ln -sf /opt/helix/hx /usr/local/bin/hx
+    mkdir -p "$HOME/.config/helix"
+    ln -sf /opt/helix/runtime "$HOME/.config/helix/runtime"
   fi
 
   # Starship
@@ -120,6 +125,15 @@ install_linux() {
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
     sudo apt update
     sudo apt install -y brave-browser
+  fi
+
+  # Spotify
+  if ! command_exists spotify; then
+    info "Installing Spotify..."
+    curl -sS https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+    echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+    sudo apt update
+    sudo apt install -y spotify-client
   fi
 
   # VS Code
@@ -197,6 +211,15 @@ install_common() {
 
 # ---------- Post-install ----------
 post_install() {
+  # Git identity (machine-local, not tracked)
+  if [ ! -f "$HOME/.gitconfig.local" ]; then
+    info "Setting up git identity (~/.gitconfig.local)..."
+    printf 'Git user name: '  && read -r git_name
+    printf 'Git email: '      && read -r git_email
+    git config -f "$HOME/.gitconfig.local" user.name  "$git_name"
+    git config -f "$HOME/.gitconfig.local" user.email "$git_email"
+  fi
+
   info "Running stow.sh to symlink dotfiles..."
   "$DOTFILES_DIR/stow.sh"
 

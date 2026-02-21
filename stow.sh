@@ -19,8 +19,14 @@ done
 SKILL_DIRS=(
   "$HOME/.claude/skills"
   "$HOME/.gemini/skills"
-  "$HOME/.config/opencode/skills"
 )
+# opencode skills go into the stow package so stow manages them
+OPENCODE_SKILL_DIR="$(pwd)/opencode/.config/opencode/skills"
+mkdir -p "$OPENCODE_SKILL_DIR"
+for skill_dir in "$HOME/.agent-skills"/*/; do
+  [ -d "$skill_dir" ] || continue
+  ln -sfn "$skill_dir" "$OPENCODE_SKILL_DIR/$(basename "$skill_dir")"
+done
 mkdir -p "${SKILL_DIRS[@]}"
 for skill_dir in "$HOME/.agent-skills"/*/; do
   [ -d "$skill_dir" ] || continue
@@ -32,6 +38,6 @@ done
 
 # Symlink shared instructions to each agent's expected path
 ln -sfn "$HOME/.claude/CLAUDE.md" "$HOME/.gemini/GEMINI.md"
-ln -sfn "$HOME/.claude/CLAUDE.md" "$HOME/.config/opencode/AGENTS.md"
+ln -sfn "$HOME/.claude/CLAUDE.md" "$(pwd)/opencode/.config/opencode/AGENTS.md"
 
 echo "All packages stowed, skills linked, and agent instructions symlinked."
