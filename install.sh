@@ -40,9 +40,12 @@ install_linux() {
   sudo apt update
   sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty bat ripgrep fd-find
 
-  # fd is installed as fdfind on Ubuntu - create symlink
+  # fd and bat have different names on Ubuntu - create symlinks
   if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
     sudo ln -sf $(which fdfind) /usr/local/bin/fd
+  fi
+  if command -v batcat &>/dev/null && ! command -v bat &>/dev/null; then
+    sudo ln -sf $(which batcat) /usr/local/bin/bat
   fi
 
   # Node.js via nodesource
