@@ -9,7 +9,7 @@ Prefix is `C-a` (Ctrl+A).
 | Key | Action |
 |---|---|
 | `C-f` | Sessionizer — fuzzy pick from `~/Projects`, creates or attaches session |
-| `C-s` | Session switcher — fuzzy list of open sessions; `Ctrl-X` kills one |
+| `C-a s` | Session switcher — built-in tmux list; killing current session switches to next available |
 | `C-a d` | Detach from session |
 | `C-a $` | Rename session |
 
@@ -73,7 +73,7 @@ Prefix is `C-a` (Ctrl+A).
 
 1. Press `C-f` → pick your project folder.
 2. A new tmux session opens with 3 windows. Window 9 is shared btop across all sessions.
-3. If the project has a `.venv`, it's activated automatically in window 1.
+3. If the project has a `.venv`, it's activated automatically in all 3 windows.
 
 ### Running code from helix
 

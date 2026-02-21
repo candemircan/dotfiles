@@ -19,7 +19,6 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 |---|---|
 | `tmux-init-default` | Creates the `default` session (window 1 shell, window 9 btop) |
 | `sessionizer` | fzf over `~/Projects` + `~/Projects/cpi`; creates/attaches sessions, activates `.venv` |
-| `tmux-session-switcher` | fzf over open sessions; `Enter` switches, `Ctrl-X` kills |
 | `tmux-yazi` | Yazi chooser popup; text files → `hx`, others → system opener |
 | `tmux-obsidian` | Opens `$vault/Inbox.md` in helix (reads `~/.zsh_secrets`) |
 

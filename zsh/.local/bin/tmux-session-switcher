@@ -1,6 +1,0 @@
-#!/bin/zsh
-tmux list-sessions -F '#{session_name}' 2>/dev/null | \
-    fzf --prompt='Session: ' \
-        --header='enter:switch  ctrl-x:kill' \
-        --bind 'ctrl-x:execute(tmux kill-session -t {})+reload(tmux list-sessions -F "#{session_name}" 2>/dev/null)' | \
-    xargs -r tmux switch-client -t
