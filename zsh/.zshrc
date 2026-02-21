@@ -44,6 +44,12 @@ export GEMINI_SANDBOX=true
 export claudemd=~/.claude/CLAUDE.md
 export EDITOR=hx
 alias py='python -m pdb -c c'
+alias p='bat --style=plain --paging=never'
+
+# fzf with ripgrep and fd for better performance
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
 
 zstyle ':completion:*' menu select
 

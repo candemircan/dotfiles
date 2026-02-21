@@ -22,7 +22,7 @@ install_macos() {
   fi
 
   info "Installing Homebrew formulae..."
-  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide
+  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat ripgrep fd
 
   info "Installing Homebrew casks..."
   brew install --cask firefox brave-browser visual-studio-code rectangle alfred kitty
@@ -38,7 +38,12 @@ install_linux() {
 
   info "Updating apt and installing base packages..."
   sudo apt update
-  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty
+  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty bat ripgrep fd-find
+
+  # fd is installed as fdfind on Ubuntu - create symlink
+  if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
+    sudo ln -sf $(which fdfind) /usr/local/bin/fd
+  fi
 
   # Node.js via nodesource
   if ! command_exists node; then
