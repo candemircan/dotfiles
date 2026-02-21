@@ -9,7 +9,6 @@ path=(
     ~/.local/bin
     ~/.config/helix
     ~/.juliaup/bin
-    ~/.antigravity/antigravity/bin
     ~/.opencode/bin
     $path
 )
