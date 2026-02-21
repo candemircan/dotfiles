@@ -31,7 +31,7 @@ To only symlink without installing:
 
 ## Tools installed
 
-`stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide` via Homebrew (macOS) or apt/curl (Linux), plus kitty, Firefox, Brave, VS Code, Claude Code, Gemini CLI, OpenCode.
+`stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide` via Homebrew (macOS) or apt/curl (Linux), plus kitty, Firefox, Brave, Spotify, VS Code, Claude Code, Gemini CLI, OpenCode.
 
 ## One-time setup after install
 
