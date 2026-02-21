@@ -44,5 +44,5 @@ See [CHEATSHEET.md](CHEATSHEET.md) for all keybindings.
 
 To Do
 - [] glow md
-- [] ripgrep fzf
+- [] ripgrep fd fzf
 
