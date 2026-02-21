@@ -42,7 +42,3 @@ echo 'export vault="/path/to/your/ObsidianVault"' >> ~/.zsh_secrets
 
 See [CHEATSHEET.md](CHEATSHEET.md) for all keybindings.
 
-To Do
-- [] glow md
-- [] ripgrep fd fzf
-
