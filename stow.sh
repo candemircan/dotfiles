@@ -2,14 +2,16 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-# back up existing .zshrc if it's a real file (not a symlink from a previous stow)
-if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
-  mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
-  echo "Backed up existing .zshrc to .zshrc.bak"
-elif [ -L "$HOME/.zshrc" ]; then
-  rm "$HOME/.zshrc"
-fi
-for pkg in zsh tmux helix kitty claude opencode; do
+# back up existing configs if they're real files (not symlinks from a previous stow)
+for f in .zshrc .gitconfig; do
+  if [ -f "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
+    mv "$HOME/$f" "$HOME/$f.bak"
+    echo "Backed up existing $f to $f.bak"
+  elif [ -L "$HOME/$f" ]; then
+    rm "$HOME/$f"
+  fi
+done
+for pkg in zsh tmux helix kitty claude opencode git; do
   stow -v -R -t "$HOME" "$pkg"
 done
 

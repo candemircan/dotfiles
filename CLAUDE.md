@@ -12,6 +12,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 - `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)
 - `claude/` — `.claude/CLAUDE.md` (shared coding guidelines) + agent skills (`baklavacutter`, `docments-to-docstrings`)
 - `opencode/` — `.config/opencode/` (opencode.json config, package.json plugin deps)
+- `git/` — `.gitconfig` (shared settings); user name/email go in `~/.gitconfig.local` (not tracked)
 
 ### `zsh/.local/bin/` scripts
 
