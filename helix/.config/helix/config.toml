@@ -18,6 +18,7 @@ select = "underline"
 [editor.file-picker]
 hidden = false
 [keys.normal]
+"\\" = ["select_all", ":pipe-to sh -c 'echo \"Word Count: $(wc -w)\" > /tmp/.hx_wc'", ":sh cat /tmp/.hx_wc", "collapse_selection"]
 R = ":reload"
 C-r = [
     ":write-all",
