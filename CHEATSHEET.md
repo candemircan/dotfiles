@@ -62,6 +62,9 @@ Prefix is `C-a` (Ctrl+A).
 |---|---|
 | `z <dir>` | Jump to directory with zoxide (learns from `cd` history) |
 | `ai <prompt>` | Run opencode with a prompt |
+| `local_ai [prompt]` | One-shot local answer (gpt-oss) or interactive chat (devstral) — offline |
+| `local_ai --model MODEL [prompt]` | Override model (`gpt-oss` or `devstral`) |
+| `serve_ai [--model MODEL]` | Start llama-server for opencode local model use (default: devstral) |
 | `ssh host` | SSH + auto-attach to remote tmux (single-host form only) |
 | `sn` | Fuzzy Obsidian note search (same as `C-a o`) |
 

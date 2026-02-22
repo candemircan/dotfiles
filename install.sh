@@ -22,7 +22,7 @@ install_macos() {
   fi
 
   info "Installing Homebrew formulae..."
-  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat ripgrep fd
+  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat ripgrep fd llama-cpp
 
   info "Installing Homebrew casks..."
   brew install --cask firefox brave-browser visual-studio-code rectangle alfred kitty spotify
@@ -30,6 +30,16 @@ install_macos() {
   # Nerd Fonts
   info "Installing RobotoMono Nerd Font..."
   brew install --cask font-roboto-mono-nerd-font
+
+  # HuggingFace models for llama-cpp
+  info "Installing HuggingFace CLI..."
+  uv tool install 'huggingface_hub[cli]'
+
+  export HF_HUB_CACHE="$HOME/.cache/huggingface/hub"
+  info "Downloading gpt-oss-20b model..."
+  hf download unsloth/gpt-oss-20b-GGUF gpt-oss-20b-UD-Q4_K_XL.gguf
+  info "Downloading Devstral-Small-2 model..."
+  hf download unsloth/Devstral-Small-2-Instruct-GGUF Devstral-Small-2-UD-Q4_K_XL.gguf
 }
 
 # ---------- Linux (deb-based) ----------

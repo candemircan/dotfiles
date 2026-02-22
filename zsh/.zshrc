@@ -41,6 +41,7 @@ fi
 
 export GEMINI_SANDBOX=true
 export claudemd=~/.claude/CLAUDE.md
+export LLAMA_CACHE=~/.cache/huggingface/hub
 export EDITOR=hx
 alias py='python -m pdb -c c'
 alias p='bat --style=plain --paging=never'
@@ -63,6 +64,41 @@ count() {
 # AI assistant function
 ai() {
     opencode run "$*"
+}
+
+# Shared model lookup for local AI functions
+_local_ai_path() {
+    local -A models=(
+        gpt-oss  "gpt-oss-20b-UD-Q4_K_XL.gguf"
+        devstral "Devstral-Small-2-UD-Q4_K_XL.gguf"
+    )
+    [[ -z "${models[$1]}" ]] && { echo "Unknown model '$1'. Available: ${(k)models}"; return 1 }
+    local path=("${LLAMA_CACHE}"/**/"${models[$1]}"(N))
+    [[ ${#path} -eq 0 ]] && { echo "Model file not found in $LLAMA_CACHE"; return 1 }
+    echo "$path[1]"
+}
+
+# Launch llama-server for opencode. Usage: serve_ai [--model MODEL]
+serve_ai() {
+    local model=devstral
+    zparseopts -D -E -- -model:=model_opt && model="${model_opt[-1]:-$model}"
+    local path=$(_local_ai_path "$model") || return 1
+    llama-server -m "$path" -ngl 99 --flash-attn -c 32768 --port 8080 "$@"
+}
+
+# One-shot or interactive local inference (offline).
+# Usage: local_ai [--model MODEL] ["question"]
+# No question → interactive chat (default: devstral)
+# With question → one-shot answer (default: gpt-oss)
+local_ai() {
+    local model=""
+    zparseopts -D -E -- -model:=model_opt
+    [[ -n "${model_opt[-1]}" ]] && model="${model_opt[-1]}"
+    local prompt="$*"
+    [[ -z "$model" ]] && { [[ -z "$prompt" ]] && model=devstral || model=gpt-oss }
+    local path=$(_local_ai_path "$model") || return 1
+    local flags=(-m "$path" -ngl 99 --flash-attn -c 32768 --no-display-prompt)
+    [[ -z "$prompt" ]] && llama-cli "${flags[@]}" -cnv || llama-cli "${flags[@]}" -p "$prompt"
 }
 
 eval "$(starship init zsh)"

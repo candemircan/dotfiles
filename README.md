@@ -33,6 +33,8 @@ To only symlink without installing:
 
 `stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide` via Homebrew (macOS) or apt/curl (Linux), plus kitty, Firefox, Brave, Spotify, VS Code, Claude Code, Gemini CLI, OpenCode.
 
+macOS also installs `llama-cpp` and downloads `gpt-oss-20b` and `Devstral-Small-2` GGUF models for local/offline inference.
+
 ## One-time setup after install
 
 ```bash

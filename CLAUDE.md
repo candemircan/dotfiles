@@ -6,7 +6,7 @@ GNU Stow-based dotfiles repo for macOS and Linux.
 
 Each top-level directory is a stow package symlinked into `$HOME`:
 
-- `zsh/` — `.zshrc` (Oh My Zsh, fzf, zoxide, starship, aliases) + `.local/bin/` scripts
+- `zsh/` — `.zshrc` (Oh My Zsh, fzf, zoxide, starship, aliases, local AI functions) + `.local/bin/` scripts
 - `tmux/` — `.tmux.conf` (prefix `C-a`, TPM, flexoki dark theme)
 - `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into tmux)
 - `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)
@@ -22,6 +22,16 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 | `sessionizer` | fzf over `~/Projects` + `~/Projects/cpi`; creates/attaches sessions, activates `.venv` |
 | `tmux-yazi` | Yazi chooser popup; text files → `hx`, others → system opener |
 | `tmux-obsidian` | Opens `$vault/Inbox.md` in helix (reads `~/.zsh_secrets`) |
+
+### `.zshrc` functions
+
+| Function | Purpose |
+|---|---|
+| `ai <prompt>` | Run opencode with a prompt |
+| `local_ai [--model MODEL] [prompt]` | One-shot answer (default: gpt-oss) or interactive chat (default: devstral) via llama-cli — offline |
+| `serve_ai [--model MODEL]` | Start llama-server for opencode local model use (default: devstral) |
+| `sn` | Fuzzy Obsidian note search |
+| `count <dir>` | Count files in a directory |
 
 ## Scripts
 
