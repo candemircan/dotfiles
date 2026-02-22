@@ -5,6 +5,7 @@ selected=$(
     { find "$HOME/Projects" -mindepth 1 -maxdepth 1 -type d
       find "$HOME/Projects/cpi" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
       echo "$HOME/dotfiles"
+      [[ -n "$vault" ]] && echo "$vault"
     } | fzf --prompt="  "
 )
 [ -z "$selected" ] && exit 0
