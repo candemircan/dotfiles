@@ -84,7 +84,7 @@ serve_ai() {
     local model=gpt-oss mpath
     zparseopts -D -E -- -model:=model_opt && model="${model_opt[-1]:-$model}"
     mpath=$(_local_ai_path "$model") || return 1
-    llama-server -m "$mpath" -ngl 99 --flash-attn on -c 8192 --port 8080 "$@"
+    llama-server -m "$mpath" -ngl 99 --flash-attn on -c 16384 --port 8080 "$@"
 }
 
 # One-shot or interactive local inference (offline).
