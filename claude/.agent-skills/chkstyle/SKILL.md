@@ -4,6 +4,9 @@ description: Enforce the fast.ai coding style in Python projects using the `chks
 ---
 
 ## Usage
+
+No need to use `uv`. It's already installed system-wide.
+
 ```bash
 chkstyle
 chkstyle src/ tests/
