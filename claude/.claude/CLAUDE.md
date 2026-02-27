@@ -21,6 +21,7 @@ The project follows the coding conventions below, most of which come from fastai
 - **Fastcore**: Use `docments` only for `@call_parse` CLI functions. For all other functions, use Google-style docstrings. Never mix both in one function.
 - **Tensor Documentation**: Always include shape notation in the docstring, e.g., `X (torch.Tensor): Input batch (batch, observation, feature)`.
 - **einops**: Use the `einops` package whenever possible and sensible to reshape tensors/arrays.
+- **`__all__`**: Define `__all__ = [...]` in every module to explicitly declare the public API.
 
 ### Symbol Naming
 - **Aggressive Abbreviations**: Used for short-lived symbols (list comps, lambdas, local helpers).

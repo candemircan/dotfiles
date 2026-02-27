@@ -1,9 +1,13 @@
-[language-server.pylsp]
-command = "pylsp"
+[language-server.ty]
+command = "ty"
+args = ["server"]
 
 [language-server.ruff]
 command = "ruff"
 args = ["server"]
+
+[language-server.ruff.config]
+settings.lint.ignore = ["E701", "E501"]
 
 [[language]]
 name="bash"
@@ -22,7 +26,7 @@ file-types = [
 [[language]]
 name = "python"
 roots = ["pyproject.toml", "setup.py", "requirements.txt", ".venv/"]
-language-servers = ["pylsp", "ruff"]
+language-servers = [{ name = "ty", except-features = ["diagnostics"] }, "ruff"]
 
 [[language]]
 name = "markdown"

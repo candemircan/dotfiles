@@ -217,7 +217,7 @@ install_common() {
 
   # python stuff
   uv tool install ruff
-  uv tool install python-lsp-server
+  uv tool install ty
 
 }
 
