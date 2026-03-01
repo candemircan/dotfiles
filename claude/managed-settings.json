@@ -1,0 +1,19 @@
+{
+  "disableBypassPermissionsMode": true,
+  "disableAllHooks": true,
+  "permissions": {
+    "allow": [
+      "WebSearch"
+    ],
+    "deny": [
+      "WebFetch(*)",
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.gnupg/**)",
+      "Write(/etc/**)",
+      "Write(/usr/local/bin/**)"
+    ]
+  }
+}

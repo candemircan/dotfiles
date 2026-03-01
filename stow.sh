@@ -40,4 +40,25 @@ done
 ln -sfn "$HOME/.claude/CLAUDE.md" "$HOME/.gemini/GEMINI.md"
 ln -sfn "$HOME/.claude/CLAUDE.md" "$(pwd)/opencode/.config/opencode/AGENTS.md"
 
+# Claude Code managed settings (machine-level safety policies)
+MANAGED_SRC="$DOTFILES_DIR/claude/managed-settings.json"
+if [ -f "$MANAGED_SRC" ]; then
+  case "$(uname -s)" in
+    Darwin) MANAGED_DEST="/Library/Application Support/ClaudeCode/managed-settings.json" ;;
+    Linux)  MANAGED_DEST="/etc/claude-code/managed-settings.json" ;;
+    *)      MANAGED_DEST="" ;;
+  esac
+  if [ -n "$MANAGED_DEST" ]; then
+    printf 'Install Claude Code managed settings to %s? [y/N] ' "$MANAGED_DEST"
+    read -r answer
+    if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
+      sudo mkdir -p "$(dirname "$MANAGED_DEST")"
+      sudo cp "$MANAGED_SRC" "$MANAGED_DEST"
+      echo "Installed managed settings to $MANAGED_DEST"
+    else
+      echo "Skipped managed settings installation."
+    fi
+  fi
+fi
+
 echo "All packages stowed, skills linked, and agent instructions symlinked."

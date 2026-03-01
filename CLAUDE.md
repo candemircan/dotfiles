@@ -10,7 +10,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 - `tmux/` — `.tmux.conf` (prefix `C-a`, TPM, flexoki dark theme)
 - `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into tmux)
 - `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)
-- `claude/` — `.claude/CLAUDE.md` (shared coding guidelines) + agent skills (`baklavacutter`, `docments-to-docstrings`)
+- `claude/` — `.claude/CLAUDE.md` (shared coding guidelines) + agent skills (`baklavacutter`, `docments-to-docstrings`) + `managed-settings.json` (machine-level safety policies)
 - `opencode/` — `.config/opencode/` (opencode.json config, package.json plugin deps)
 - `git/` — `.gitconfig` (shared settings); user name/email go in `~/.gitconfig.local` (not tracked)
 
@@ -49,6 +49,10 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 | OpenCode | `~/.config/opencode/AGENTS.md` | `~/.config/opencode/skills/` |
 
 Skills from `~/.agent-skills/` are symlinked into all four skills directories.
+
+`claude/managed-settings.json` contains machine-level Claude Code safety policies. `stow.sh` prompts to install it to:
+- macOS: `/Library/Application Support/ClaudeCode/managed-settings.json`
+- Linux: `/etc/claude-code/managed-settings.json`
 
 ## Adding a new package
 
