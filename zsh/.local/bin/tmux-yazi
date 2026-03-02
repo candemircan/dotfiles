@@ -1,6 +1,8 @@
 #!/bin/zsh
+# Disable image previews in popup context to prevent terminal crashes
+export YAZI_PREVIEWER=""
 tmp=$(mktemp)
-yazi --chooser-file="$tmp" 2>/dev/null
+yazi --chooser-file="$tmp" 2>/tmp/yazi-popup.log
 if [ -s "$tmp" ]; then
     file=$(cat "$tmp")
     mime=$(file --mime-type -b "$file")
