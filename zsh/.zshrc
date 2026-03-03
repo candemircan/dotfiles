@@ -72,19 +72,22 @@ _local_ai_path() {
         gpt-oss  "gpt-oss-20b-UD-Q4_K_XL.gguf"
         devstral "Devstral-Small-2-24B-Instruct-2512-UD-Q4_K_XL.gguf"
         gemma    "gemma-3-27b-it-UD-Q4_K_XL.gguf"
+        qwen27   "Qwen3.5-27B-UD-Q4_K_XL.gguf"
+        qwen9    "Qwen3.5-9B-UD-Q4_K_XL.gguf"
     )
-    [[ -z "${models[$1]}" ]] && { echo "Unknown model '$1'. Available: ${(k)models}"; return 1 }
+    local -A ctxsz=(gpt-oss 8192 devstral 4096 gemma 4096 qwen27 4096 qwen9 8192)
+    [[ -z "${models[$1]}" ]] && { echo "Unknown model '$1'. Available: ${(k)models}" >&2; return 1 }
     local -a found=("${LLAMA_CACHE}"/**/"${models[$1]}"(N))
-    [[ ${#found} -eq 0 ]] && { echo "Model file not found in $LLAMA_CACHE"; return 1 }
-    echo "$found[1]"
+    [[ ${#found} -eq 0 ]] && { echo "Model file not found in $LLAMA_CACHE" >&2; return 1 }
+    echo "$found[1]" "${ctxsz[$1]}"
 }
 
 # Launch llama-server for opencode. Usage: serve_ai [--model MODEL]
 serve_ai() {
-    local model=gpt-oss mpath
+    local model=gpt-oss
     zparseopts -D -E -- -model:=model_opt && model="${model_opt[-1]:-$model}"
-    mpath=$(_local_ai_path "$model") || return 1
-    llama-server -m "$mpath" -ngl 99 --flash-attn on -c 16384 --port 8080 "$@"
+    local info=($(_local_ai_path "$model")) || return 1
+    llama-server -m "$info[1]" -ngl 99 --flash-attn on -c "$info[2]" --port 8080 "$@"
 }
 
 # One-shot or interactive local inference (offline).
@@ -97,8 +100,8 @@ local_ai() {
     [[ -n "${model_opt[-1]}" ]] && model="${model_opt[-1]}"
     local prompt="$*"
     [[ -z "$model" ]] && model=gpt-oss
-    local mpath; mpath=$(_local_ai_path "$model") || return 1
-    local flags=(-m "$mpath" -ngl 99 --flash-attn on -c 8192 --no-display-prompt)
+    local info=($(_local_ai_path "$model")) || return 1
+    local flags=(-m "$info[1]" -ngl 99 --flash-attn on -c "$info[2]" --no-display-prompt)
     [[ -z "$prompt" ]] && llama-cli "${flags[@]}" -cnv || llama-cli "${flags[@]}" -p "$prompt"
 }
 

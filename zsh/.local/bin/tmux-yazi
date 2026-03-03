@@ -1,8 +1,11 @@
 #!/bin/zsh
-# Disable image previews in popup context to prevent terminal crashes
-export YAZI_PREVIEWER=""
+# Clear problematic env vars that cause terminal response timeouts in tmux popups
+unset KITTY_WINDOW_ID
+unset KITTY_PID
+unset TERM_PROGRAM
+export TERM=xterm-256color
 tmp=$(mktemp)
-yazi --chooser-file="$tmp" 2>/tmp/yazi-popup.log
+yazi --chooser-file="$tmp" 2>/dev/null
 if [ -s "$tmp" ]; then
     file=$(cat "$tmp")
     mime=$(file --mime-type -b "$file")

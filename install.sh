@@ -22,7 +22,7 @@ install_macos() {
   fi
 
   info "Installing Homebrew formulae..."
-  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat ripgrep fd llama-cpp
+  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat ripgrep fd llama.cpp
 
   info "Installing Homebrew casks..."
   brew install --cask firefox brave-browser visual-studio-code rectangle alfred kitty spotify
@@ -42,6 +42,10 @@ install_macos() {
   hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF Devstral-Small-2-24B-Instruct-2512-UD-Q4_K_XL.gguf
   info "Downloading Gemma-3-27b model..."
   hf download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-UD-Q4_K_XL.gguf
+  info "Downloading Qwen3.5-27B model..."
+  hf download unsloth/Qwen3.5-27B-GGUF Qwen3.5-27B-UD-Q4_K_XL.gguf
+  info "Downloading Qwen3.5-9B model..."
+  hf download unsloth/Qwen3.5-9B-GGUF Qwen3.5-9B-UD-Q4_K_XL.gguf
 }
 
 # ---------- Linux (deb-based) ----------
