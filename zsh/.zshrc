@@ -71,11 +71,10 @@ _local_ai_path() {
     local -A models=(
         gpt-oss  "gpt-oss-20b-UD-Q4_K_XL.gguf"
         devstral "Devstral-Small-2-24B-Instruct-2512-UD-Q4_K_XL.gguf"
-        gemma    "gemma-3-27b-it-UD-Q4_K_XL.gguf"
         qwen27   "Qwen3.5-27B-UD-Q4_K_XL.gguf"
         qwen9    "Qwen3.5-9B-UD-Q4_K_XL.gguf"
     )
-    local -A ctxsz=(gpt-oss 8192 devstral 4096 gemma 4096 qwen27 4096 qwen9 8192)
+    local -A ctxsz=(gpt-oss 8192 devstral 4096 qwen27 4096 qwen9 8192)
     [[ -z "${models[$1]}" ]] && { echo "Unknown model '$1'. Available: ${(k)models}" >&2; return 1 }
     local -a found=("${LLAMA_CACHE}"/**/"${models[$1]}"(N))
     [[ ${#found} -eq 0 ]] && { echo "Model file not found in $LLAMA_CACHE" >&2; return 1 }

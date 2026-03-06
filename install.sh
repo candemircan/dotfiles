@@ -40,8 +40,6 @@ install_macos() {
   hf download unsloth/gpt-oss-20b-GGUF gpt-oss-20b-UD-Q4_K_XL.gguf
   info "Downloading Devstral-Small-2 model..."
   hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF Devstral-Small-2-24B-Instruct-2512-UD-Q4_K_XL.gguf
-  info "Downloading Gemma-3-27b model..."
-  hf download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-UD-Q4_K_XL.gguf
   info "Downloading Qwen3.5-27B model..."
   hf download unsloth/Qwen3.5-27B-GGUF Qwen3.5-27B-UD-Q4_K_XL.gguf
   info "Downloading Qwen3.5-9B model..."
