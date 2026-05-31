@@ -11,7 +11,7 @@ for f in .zshrc .gitconfig; do
     rm "$HOME/$f"
   fi
 done
-for pkg in zsh tmux helix kitty claude opencode git; do
+for pkg in zsh tmux helix kitty claude opencode git ruff; do
   stow -v -R -t "$HOME" "$pkg"
 done
 
