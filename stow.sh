@@ -36,9 +36,6 @@ for skill_dir in "$HOME/.agent-skills"/*/; do
   done
 done
 
-# Symlink shared instructions to each agent's expected path
-ln -sfn "$HOME/.claude/CLAUDE.md" "$HOME/.gemini/GEMINI.md"
-ln -sfn "$HOME/.claude/CLAUDE.md" "$(pwd)/opencode/.config/opencode/AGENTS.md"
 
 # Claude Code managed settings (machine-level safety policies)
 MANAGED_SRC="$DOTFILES_DIR/claude/managed-settings.json"

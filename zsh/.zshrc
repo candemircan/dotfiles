@@ -40,7 +40,6 @@ fi
 
 
 export GEMINI_SANDBOX=true
-export claudemd=~/.claude/CLAUDE.md
 export LLAMA_CACHE=~/.cache/huggingface/hub
 export EDITOR=hx
 alias py='python -m pdb -c c'
@@ -126,3 +125,7 @@ sn() {
 }
 
 setopt GLOB_DOTS
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/candemircan/.local/bin:$PATH"
