@@ -6,10 +6,6 @@ args = ["server"]
 command = "ruff"
 args = ["server"]
 
-[language-server.ruff.config]
-settings.lint.ignore = ["E701", "E402", "E401", "E501", "E702"]
-settings.lint.select = ["E", "F", "W", "I"]
-
 [[language]]
 name="bash"
 file-types = [

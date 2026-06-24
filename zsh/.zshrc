@@ -22,14 +22,6 @@ plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
-autoload -Uz compinit
-
-if [[ -n "${ZDOTDIR:-$HOME}/.zcompdump"(#qN.mh+24) ]]; then
-  compinit
-else
-  compinit -C
-fi
-
 if [ -f ~/.fzf.zsh ]; then
   source ~/.fzf.zsh
 elif [ -d /usr/share/doc/fzf/examples ]; then
@@ -60,48 +52,7 @@ count() {
     fi
 }
 
-# AI assistant function
-ai() {
-    opencode run "$*"
-}
 
-# Shared model lookup for local AI functions
-_local_ai_path() {
-    local -A models=(
-        gpt-oss  "gpt-oss-20b-UD-Q4_K_XL.gguf"
-        devstral "Devstral-Small-2-24B-Instruct-2512-UD-Q4_K_XL.gguf"
-        qwen27   "Qwen3.5-27B-UD-Q4_K_XL.gguf"
-        qwen9    "Qwen3.5-9B-UD-Q4_K_XL.gguf"
-    )
-    local -A ctxsz=(gpt-oss 8192 devstral 4096 qwen27 4096 qwen9 8192)
-    [[ -z "${models[$1]}" ]] && { echo "Unknown model '$1'. Available: ${(k)models}" >&2; return 1 }
-    local -a found=("${LLAMA_CACHE}"/**/"${models[$1]}"(N))
-    [[ ${#found} -eq 0 ]] && { echo "Model file not found in $LLAMA_CACHE" >&2; return 1 }
-    echo "$found[1]" "${ctxsz[$1]}"
-}
-
-# Launch llama-server for opencode. Usage: serve_ai [--model MODEL]
-serve_ai() {
-    local model=gpt-oss
-    zparseopts -D -E -- -model:=model_opt && model="${model_opt[-1]:-$model}"
-    local info=($(_local_ai_path "$model")) || return 1
-    llama-server -m "$info[1]" -ngl 99 --flash-attn on -c "$info[2]" --port 8080 "$@"
-}
-
-# One-shot or interactive local inference (offline).
-# Usage: local_ai [--model MODEL] ["question"]
-# No question → interactive chat (default: devstral)
-# With question → one-shot answer (default: gpt-oss)
-local_ai() {
-    local model=""
-    zparseopts -D -E -- -model:=model_opt
-    [[ -n "${model_opt[-1]}" ]] && model="${model_opt[-1]}"
-    local prompt="$*"
-    [[ -z "$model" ]] && model=gpt-oss
-    local info=($(_local_ai_path "$model")) || return 1
-    local flags=(-m "$info[1]" -ngl 99 --flash-attn on -c "$info[2]" --no-display-prompt)
-    [[ -z "$prompt" ]] && llama-cli "${flags[@]}" -cnv || llama-cli "${flags[@]}" -p "$prompt"
-}
 
 eval "$(starship init zsh)"
 
@@ -129,3 +80,4 @@ setopt GLOB_DOTS
 
 # Added by Antigravity CLI installer
 export PATH="/Users/candemircan/.local/bin:$PATH"
+export OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS=3600000
