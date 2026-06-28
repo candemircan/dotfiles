@@ -81,6 +81,3 @@ This can be useful in interactive and non-interactive Pi runs. In non-interactiv
 - keeps the window open by default for inspection
 - returns the tmux target and attach command when applicable
 
-## Safety
-
-The extension checks `~/.pi/agent/shell-guard.json` rules before starting a command. Interactive sessions ask for confirmation; non-interactive sessions block matching commands unless `--unsafe` is passed.

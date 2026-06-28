@@ -14,12 +14,6 @@ type Config = {
 	closeDelaySeconds: number;
 };
 
-type ShellGuardRule = {
-	id: string;
-	description: string;
-	pattern: string;
-};
-
 const defaultConfig: Config = {
 	backend: "herdr",
 	focus: false,
@@ -45,25 +39,6 @@ function loadConfig(): Config {
 		};
 	} catch {
 		return defaultConfig;
-	}
-}
-
-function loadShellGuardRules(): Array<ShellGuardRule & { regex: RegExp }> {
-	const path = join(agentDir(), "shell-guard.json");
-	if (!existsSync(path)) return [];
-
-	try {
-		const parsed = JSON.parse(readFileSync(path, "utf8")) as { enabled?: boolean; rules?: ShellGuardRule[] };
-		if (parsed.enabled === false || !Array.isArray(parsed.rules)) return [];
-		return parsed.rules.flatMap((rule) => {
-			try {
-				return [{ ...rule, regex: new RegExp(rule.pattern, "i") }];
-			} catch {
-				return [];
-			}
-		});
-	} catch {
-		return [];
 	}
 }
 
@@ -112,21 +87,6 @@ function getRootPane(payload: any): any {
 
 export default function (pi: ExtensionAPI) {
 	let config = loadConfig();
-
-	async function checkShellGuard(command: string, ctx: any) {
-		if (pi.getFlag("unsafe")) return;
-
-		const rule = loadShellGuardRules().find((rule) => rule.regex.test(command));
-		if (!rule) return;
-
-		const reason = `${rule.description} (${rule.id})`;
-		if (!ctx.hasUI) {
-			throw new Error(`Background command blocked by shell guard: ${reason}. Use --unsafe to override for this run.`);
-		}
-
-		const ok = await ctx.ui.confirm("Background command requires approval", `Rule: ${reason}\n\n${command}`);
-		if (!ok) throw new Error(`Background command denied by shell guard: ${reason}`);
-	}
 
 	async function runHerdr(command: string, cwd: string, label: string, focus: boolean, closeOnExit: boolean, closeDelaySeconds: number) {
 		const list = await pi.exec("herdr", ["workspace", "list"]);
@@ -205,8 +165,6 @@ export default function (pi: ExtensionAPI) {
 		config = loadConfig();
 		const command = input.command.trim();
 		if (!command) throw new Error("command is required");
-
-		await checkShellGuard(command, ctx);
 
 		const cwd = input.cwd || ctx.cwd;
 		const label = safeLabel(input.label || inferLabel(command));

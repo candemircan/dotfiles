@@ -45,6 +45,3 @@ Supported backends: `herdr`, `tmux`.
 
 This is useful in both interactive and non-interactive Pi runs. In non-interactive mode it starts the command and lets it continue in the configured backend after Pi exits.
 
-## Safety
-
-`background_run` checks shell guard rules before starting commands. Use `--unsafe` only when you intentionally want to bypass guardrails for one Pi process.
