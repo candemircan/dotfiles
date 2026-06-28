@@ -14,19 +14,23 @@ The model can call `background_run` with:
 
 ```json
 {
-  "command": "npm test",
-  "label": "tests",
+  "command": "python train.py --config config.yaml",
+  "label": "training",
   "backend": "herdr",
-  "focus": false
+  "focus": false,
+  "closeOnExit": false,
+  "closeDelaySeconds": 5
 }
 ```
+
+Use it when continued execution, visible progress, or manual inspection is useful. Prefer normal `bash` for short commands where the result should come directly back into the chat.
 
 ## Command
 
 Inside Pi:
 
 ```text
-/background-run npm test
+/background-run python train.py --config config.yaml
 ```
 
 ## Config
@@ -36,6 +40,10 @@ Inside Pi:
 - Extension docs: `~/.pi/agent/extensions/background-run.md`
 
 Supported backends: `herdr`, `tmux`.
+
+## Interactive and non-interactive use
+
+This is useful in both interactive and non-interactive Pi runs. In non-interactive mode it starts the command and lets it continue in the configured backend after Pi exits.
 
 ## Safety
 

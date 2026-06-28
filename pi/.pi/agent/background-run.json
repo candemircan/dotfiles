@@ -1,4 +1,6 @@
 {
   "backend": "herdr",
-  "focus": false
+  "focus": false,
+  "closeOnExit": false,
+  "closeDelaySeconds": 5
 }

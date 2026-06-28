@@ -10,6 +10,8 @@ type Backend = "herdr" | "tmux";
 type Config = {
 	backend: Backend;
 	focus: boolean;
+	closeOnExit: boolean;
+	closeDelaySeconds: number;
 };
 
 type ShellGuardRule = {
@@ -21,6 +23,8 @@ type ShellGuardRule = {
 const defaultConfig: Config = {
 	backend: "herdr",
 	focus: false,
+	closeOnExit: false,
+	closeDelaySeconds: 5,
 };
 
 function agentDir(): string {
@@ -36,6 +40,8 @@ function loadConfig(): Config {
 		return {
 			backend: parsed.backend === "tmux" ? "tmux" : "herdr",
 			focus: parsed.focus ?? defaultConfig.focus,
+			closeOnExit: parsed.closeOnExit ?? defaultConfig.closeOnExit,
+			closeDelaySeconds: typeof parsed.closeDelaySeconds === "number" ? parsed.closeDelaySeconds : defaultConfig.closeDelaySeconds,
 		};
 	} catch {
 		return defaultConfig;
@@ -69,6 +75,15 @@ function safeLabel(value: string): string {
 function inferLabel(command: string): string {
 	const firstWords = command.trim().split(/\s+/).slice(0, 2).join("-");
 	return safeLabel(firstWords || "background");
+}
+
+function shellQuote(value: string): string {
+	return `'${value.replace(/'/g, `'\\''`)}'`;
+}
+
+function wrapCommand(command: string, afterExit?: string): string {
+	if (!afterExit) return command;
+	return `${command}\nstatus=$?\n${afterExit}\nexit $status`;
 }
 
 function parseJson(stdout: string): any {
@@ -113,7 +128,7 @@ export default function (pi: ExtensionAPI) {
 		if (!ok) throw new Error(`Background command denied by shell guard: ${reason}`);
 	}
 
-	async function runHerdr(command: string, cwd: string, label: string, focus: boolean) {
+	async function runHerdr(command: string, cwd: string, label: string, focus: boolean, closeOnExit: boolean, closeDelaySeconds: number) {
 		const list = await pi.exec("herdr", ["workspace", "list"]);
 		if (list.code !== 0) throw new Error(`herdr workspace list failed: ${list.stderr || list.stdout}`);
 
@@ -152,17 +167,24 @@ export default function (pi: ExtensionAPI) {
 		const paneId = rootPane?.pane_id;
 		const tabId = tab?.tab_id ?? tab?.id;
 		if (!paneId) throw new Error("Could not determine Herdr pane id");
+		if (!tabId) throw new Error("Could not determine Herdr tab id");
 
-		const run = await pi.exec("herdr", ["pane", "run", paneId, command]);
+		const afterExit = closeOnExit
+			? `sleep ${Math.max(0, closeDelaySeconds)}\nherdr tab close ${shellQuote(tabId)}`
+			: undefined;
+		const run = await pi.exec("herdr", ["pane", "run", paneId, wrapCommand(command, afterExit)]);
 		if (run.code !== 0) throw new Error(`herdr pane run failed: ${run.stderr || run.stdout}`);
 
 		return { backend: "herdr" as const, workspaceId, tabId, paneId };
 	}
 
-	async function runTmux(command: string, cwd: string, label: string, focus: boolean) {
+	async function runTmux(command: string, cwd: string, label: string, focus: boolean, closeOnExit: boolean, closeDelaySeconds: number) {
+		const tmuxCommand = closeOnExit
+			? `bash -lc ${shellQuote(wrapCommand(command, `sleep ${Math.max(0, closeDelaySeconds)}`))}`
+			: `bash -lc ${shellQuote(`${command}\nstatus=$?\nprintf '\\n[background_run exited with status %s; press Ctrl-D or run exit to close]\\n' "$status"\nexec "$SHELL"`)}`;
 		const inTmux = Boolean(process.env.TMUX);
 		if (inTmux) {
-			const args = ["new-window", "-d", "-n", label, "-c", cwd, command];
+			const args = ["new-window", "-d", "-n", label, "-c", cwd, tmuxCommand];
 			const result = await pi.exec("tmux", args);
 			if (result.code !== 0) throw new Error(`tmux new-window failed: ${result.stderr || result.stdout}`);
 			if (focus) await pi.exec("tmux", ["select-window", "-t", label]);
@@ -172,14 +194,14 @@ export default function (pi: ExtensionAPI) {
 		const session = "pi-bg";
 		const hasSession = await pi.exec("tmux", ["has-session", "-t", session]);
 		const result = hasSession.code === 0
-			? await pi.exec("tmux", ["new-window", "-t", session, "-d", "-n", label, "-c", cwd, command])
-			: await pi.exec("tmux", ["new-session", "-d", "-s", session, "-n", label, "-c", cwd, command]);
+			? await pi.exec("tmux", ["new-window", "-t", session, "-d", "-n", label, "-c", cwd, tmuxCommand])
+			: await pi.exec("tmux", ["new-session", "-d", "-s", session, "-n", label, "-c", cwd, tmuxCommand]);
 		if (result.code !== 0) throw new Error(`tmux background run failed: ${result.stderr || result.stdout}`);
 
 		return { backend: "tmux" as const, target: `${session}:${label}`, attach: `tmux attach -t ${session}` };
 	}
 
-	async function runBackground(input: { command: string; cwd?: string; label?: string; backend?: Backend; focus?: boolean }, ctx: any) {
+	async function runBackground(input: { command: string; cwd?: string; label?: string; backend?: Backend; focus?: boolean; closeOnExit?: boolean; closeDelaySeconds?: number }, ctx: any) {
 		config = loadConfig();
 		const command = input.command.trim();
 		if (!command) throw new Error("command is required");
@@ -190,9 +212,11 @@ export default function (pi: ExtensionAPI) {
 		const label = safeLabel(input.label || inferLabel(command));
 		const backend = input.backend || config.backend;
 		const focus = input.focus ?? config.focus;
+		const closeOnExit = input.closeOnExit ?? config.closeOnExit;
+		const closeDelaySeconds = input.closeDelaySeconds ?? config.closeDelaySeconds;
 
-		if (backend === "tmux") return { command, cwd, label, focus, ...(await runTmux(command, cwd, label, focus)) };
-		return { command, cwd, label, focus, ...(await runHerdr(command, cwd, label, focus)) };
+		if (backend === "tmux") return { command, cwd, label, focus, closeOnExit, closeDelaySeconds, ...(await runTmux(command, cwd, label, focus, closeOnExit, closeDelaySeconds)) };
+		return { command, cwd, label, focus, closeOnExit, closeDelaySeconds, ...(await runHerdr(command, cwd, label, focus, closeOnExit, closeDelaySeconds)) };
 	}
 
 	pi.registerTool({
@@ -201,7 +225,7 @@ export default function (pi: ExtensionAPI) {
 		description: "Run a long shell command visibly in a Herdr tab or tmux window without waiting for it to finish.",
 		promptSnippet: "Run long commands in a visible Herdr tab or tmux window instead of blocking on bash.",
 		promptGuidelines: [
-			"Use background_run for long-running commands such as dev servers, watchers, full test suites, and builds when live output is useful.",
+			"Use background_run for long-running commands when live output, manual inspection, or continued execution outside the chat is useful.",
 			"Do not use background_run for quick commands where normal bash output is needed immediately.",
 		],
 		parameters: Type.Object({
@@ -210,6 +234,8 @@ export default function (pi: ExtensionAPI) {
 			cwd: Type.Optional(Type.String({ description: "Working directory. Defaults to Pi's current cwd." })),
 			backend: Type.Optional(StringEnum(["herdr", "tmux"] as const, { description: "Backend to use. Defaults to config." })),
 			focus: Type.Optional(Type.Boolean({ description: "Focus the created tab/window. Defaults to config." })),
+			closeOnExit: Type.Optional(Type.Boolean({ description: "Close the created tab/window after the command exits. Defaults to config." })),
+			closeDelaySeconds: Type.Optional(Type.Number({ description: "Seconds to wait before closing when closeOnExit is true. Defaults to config." })),
 		}),
 		async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
 			const result = await runBackground(params, ctx);
