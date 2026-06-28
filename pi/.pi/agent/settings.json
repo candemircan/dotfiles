@@ -1,10 +1,12 @@
 {
-  "defaultModel": "ds-flash",
-  "defaultProvider": "opencode-go",
+  "defaultModel": "gpt-5.5",
+  "defaultProvider": "openai-codex",
   "packages": [
     "npm:pi-web-access",
+    "npm:@tmustier/pi-files-widget",
     "git:github.com/huggingface/pi-llama"
   ],
   "defaultThinkingLevel": "medium",
-  "theme": "dark"
+  "theme": "dark",
+  "lastChangelogVersion": "0.80.2"
 }

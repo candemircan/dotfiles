@@ -22,7 +22,7 @@ install_macos() {
   fi
 
   info "Installing Homebrew formulae..."
-  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat ripgrep fd llama.cpp
+  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat git-delta glow ripgrep fd llama.cpp
 
   info "Installing Homebrew casks..."
   brew install --cask firefox brave-browser visual-studio-code rectangle alfred kitty spotify
@@ -39,6 +39,23 @@ install_linux() {
   info "Updating apt and installing base packages..."
   sudo apt update
   sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty bat ripgrep fd-find
+
+  if ! command_exists delta; then
+    info "Installing git-delta..."
+    sudo apt install -y git-delta || warn "git-delta install failed"
+  fi
+
+  if ! command_exists glow; then
+    info "Installing Glow..."
+    sudo mkdir -p /etc/apt/keyrings
+    if curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor --yes -o /etc/apt/keyrings/charm.gpg; then
+      printf '%s\n' 'deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *' | sudo tee /etc/apt/sources.list.d/charm.list >/dev/null
+      sudo apt update
+      sudo apt install -y glow || warn "glow install failed"
+    else
+      warn "Charm apt key install failed; skipping glow"
+    fi
+  fi
 
   # fd and bat have different names on Ubuntu - create symlinks
   if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
@@ -211,6 +228,7 @@ install_common() {
 
   info "Installing Pi packages..."
   pi install npm:pi-web-access --no-approve || warn "pi-web-access install failed"
+  pi install npm:@tmustier/pi-files-widget --no-approve || warn "pi-files-widget install failed"
   pi install git:github.com/huggingface/pi-llama --no-approve || warn "pi-llama install failed"
 
   # python stuff
