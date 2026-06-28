@@ -1,5 +1,5 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -70,20 +70,62 @@ function agentDir(): string {
 	return process.env.PI_CODING_AGENT_DIR || join(homedir(), ".pi", "agent");
 }
 
+function configPath(): string {
+	return join(agentDir(), "shell-guard.json");
+}
+
+function validateConfig(value: unknown): Config {
+	if (!value || typeof value !== "object") {
+		throw new Error("Config must be a JSON object");
+	}
+
+	const input = value as Partial<Config>;
+	const enabled = input.enabled ?? defaultConfig.enabled;
+	const nonInteractive = input.nonInteractive ?? defaultConfig.nonInteractive;
+	const rules = input.rules ?? defaultRules;
+
+	if (typeof enabled !== "boolean") {
+		throw new Error("enabled must be true or false");
+	}
+	if (nonInteractive !== "block" && nonInteractive !== "allow") {
+		throw new Error('nonInteractive must be "block" or "allow"');
+	}
+	if (!Array.isArray(rules) || rules.length === 0) {
+		throw new Error("rules must be a non-empty array");
+	}
+
+	for (const [index, rule] of rules.entries()) {
+		if (!rule || typeof rule !== "object") throw new Error(`rules[${index}] must be an object`);
+		if (typeof rule.id !== "string" || rule.id.trim() === "") throw new Error(`rules[${index}].id must be a non-empty string`);
+		if (typeof rule.description !== "string" || rule.description.trim() === "") {
+			throw new Error(`rules[${index}].description must be a non-empty string`);
+		}
+		if (typeof rule.pattern !== "string" || rule.pattern.trim() === "") {
+			throw new Error(`rules[${index}].pattern must be a non-empty string`);
+		}
+		try {
+			new RegExp(rule.pattern, "i");
+		} catch (error) {
+			throw new Error(`rules[${index}] (${rule.id}) has invalid regex: ${(error as Error).message}`);
+		}
+	}
+
+	return { enabled, nonInteractive, rules };
+}
+
 function loadConfig(): Config {
-	const path = join(agentDir(), "shell-guard.json");
+	const path = configPath();
 	if (!existsSync(path)) return defaultConfig;
 
 	try {
-		const parsed = JSON.parse(readFileSync(path, "utf8")) as Partial<Config>;
-		return {
-			enabled: parsed.enabled ?? defaultConfig.enabled,
-			nonInteractive: parsed.nonInteractive === "allow" ? "allow" : "block",
-			rules: Array.isArray(parsed.rules) && parsed.rules.length > 0 ? parsed.rules : defaultRules,
-		};
+		return validateConfig(JSON.parse(readFileSync(path, "utf8")));
 	} catch {
 		return defaultConfig;
 	}
+}
+
+function formatConfig(value: Config): string {
+	return `${JSON.stringify(value, null, 2)}\n`;
 }
 
 function compileRules(rules: Rule[]): Array<Rule & { regex: RegExp }> {
@@ -145,7 +187,7 @@ export default function (pi: ExtensionAPI) {
 	}
 
 	pi.registerCommand("shell-guard", {
-		description: "Manage shell guard: /shell-guard on|off|status|rules|reload|clear",
+		description: "Manage shell guard: /shell-guard on|off|status|rules|edit|reload|clear",
 		handler: async (args, ctx) => {
 			const action = args.trim().toLowerCase() || "status";
 
@@ -170,6 +212,31 @@ export default function (pi: ExtensionAPI) {
 				return;
 			}
 
+			if (action === "edit") {
+				if (!ctx.hasUI) {
+					ctx.ui.notify("/shell-guard edit requires an interactive UI", "error");
+					return;
+				}
+
+				const path = configPath();
+				const current = existsSync(path) ? readFileSync(path, "utf8") : formatConfig(config);
+				const edited = await ctx.ui.editor("Edit shell guard config", current);
+				if (edited === undefined) return;
+
+				try {
+					const nextConfig = validateConfig(JSON.parse(edited));
+					writeFileSync(path, formatConfig(nextConfig), "utf8");
+					config = nextConfig;
+					sessionEnabled = config.enabled;
+					compiledRules = compileRules(config.rules);
+					allowedCommands.clear();
+					ctx.ui.notify(`Shell guard config saved and reloaded: ${path}`, "info");
+				} catch (error) {
+					ctx.ui.notify(`Shell guard config not saved: ${(error as Error).message}`, "error");
+				}
+				return;
+			}
+
 			if (action === "clear") {
 				allowedCommands.clear();
 				ctx.ui.notify("Shell guard session approvals cleared", "info");
@@ -186,7 +253,7 @@ export default function (pi: ExtensionAPI) {
 
 			const flagStatus = pi.getFlag("unsafe") ? "disabled by --unsafe" : "not set";
 			ctx.ui.notify(
-				`Shell guard: ${isEnabled() ? "enabled" : "disabled"}\n--unsafe: ${flagStatus}\nNon-interactive: ${config.nonInteractive}\nRules: ${compiledRules.length}\nSession approvals: ${allowedCommands.size}`,
+				`Shell guard: ${isEnabled() ? "enabled" : "disabled"}\n--unsafe: ${flagStatus}\nNon-interactive: ${config.nonInteractive}\nRules: ${compiledRules.length}\nSession approvals: ${allowedCommands.size}\nConfig: ${configPath()}`,
 				"info",
 			);
 		},
