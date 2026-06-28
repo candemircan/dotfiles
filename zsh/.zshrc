@@ -86,7 +86,6 @@ fi
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 
-export LLAMA_CACHE=~/.cache/huggingface/hub
 export EDITOR=hx
 alias py='python -m pdb -c c'
 alias p='bat --style=plain --paging=never'

@@ -30,20 +30,6 @@ install_macos() {
   # Nerd Fonts
   info "Installing RobotoMono Nerd Font..."
   brew install --cask font-roboto-mono-nerd-font
-
-  # HuggingFace models for llama-cpp
-  info "Installing HuggingFace CLI..."
-  uv tool install 'huggingface_hub[cli]'
-
-  export HF_HUB_CACHE="$HOME/.cache/huggingface/hub"
-  info "Downloading gpt-oss-20b model..."
-  hf download unsloth/gpt-oss-20b-GGUF gpt-oss-20b-UD-Q4_K_XL.gguf
-  info "Downloading Devstral-Small-2 model..."
-  hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF Devstral-Small-2-24B-Instruct-2512-UD-Q4_K_XL.gguf
-  info "Downloading Qwen3.5-27B model..."
-  hf download unsloth/Qwen3.5-27B-GGUF Qwen3.5-27B-UD-Q4_K_XL.gguf
-  info "Downloading Qwen3.5-9B model..."
-  hf download unsloth/Qwen3.5-9B-GGUF Qwen3.5-9B-UD-Q4_K_XL.gguf
 }
 
 # ---------- Linux (deb-based) ----------

@@ -35,8 +35,6 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 | Function | Purpose |
 |---|---|
 | `ai <prompt>` | Run opencode with a prompt |
-| `local_ai [--model MODEL] [prompt]` | One-shot answer (default: gpt-oss) or interactive chat (default: devstral) via llama-cli — offline |
-| `serve_ai [--model MODEL]` | Start llama-server for opencode local model use (default: devstral) |
 | `sn` | Fuzzy Obsidian note search |
 | `count <dir>` | Count files in a directory |
 

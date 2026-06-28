@@ -38,7 +38,7 @@ To only symlink without installing:
 
 Kitty starts Herdr through `~/.local/bin/herdr-init-default`, which ensures `default` and `btop` spaces exist before attaching.
 
-macOS installs `llama.cpp` via Homebrew and downloads GGUF models for local/offline inference. Linux installs `llama.cpp` via `https://llama.app/install.sh`.
+macOS installs `llama.cpp` via Homebrew. Linux installs `llama.cpp` via `https://llama.app/install.sh`. No local GGUF models are downloaded by default.
 
 ## One-time setup after install
 
