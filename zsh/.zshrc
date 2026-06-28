@@ -86,7 +86,6 @@ fi
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 
-export GEMINI_SANDBOX=true
 export LLAMA_CACHE=~/.cache/huggingface/hub
 export EDITOR=hx
 alias py='python -m pdb -c c'
