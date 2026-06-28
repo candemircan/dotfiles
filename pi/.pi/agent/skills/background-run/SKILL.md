@@ -1,0 +1,42 @@
+# Background Run
+
+Use this skill when the user asks about running long commands in the background, offloading commands to Herdr or tmux, the `background_run` tool, or `/background-run`.
+
+## Summary
+
+A global Pi extension exposes `background_run`, which runs long shell commands in a visible Herdr tab or tmux window instead of blocking Pi's normal `bash` tool.
+
+The default backend is configured as Herdr in `~/.pi/agent/background-run.json`.
+
+## Tool
+
+The model can call `background_run` with:
+
+```json
+{
+  "command": "npm test",
+  "label": "tests",
+  "backend": "herdr",
+  "focus": false
+}
+```
+
+## Command
+
+Inside Pi:
+
+```text
+/background-run npm test
+```
+
+## Config
+
+- Active config: `~/.pi/agent/background-run.json`
+- Dotfiles config: `pi/.pi/agent/background-run.json`
+- Extension docs: `~/.pi/agent/extensions/background-run.md`
+
+Supported backends: `herdr`, `tmux`.
+
+## Safety
+
+`background_run` checks shell guard rules before starting commands. Use `--unsafe` only when you intentionally want to bypass guardrails for one Pi process.
