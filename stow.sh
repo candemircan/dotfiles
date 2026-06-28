@@ -23,7 +23,7 @@ if [ -d "$OPENCODE_SKILL_DIR" ]; then
 fi
 
 # Run GNU Stow
-for pkg in zsh tmux helix kitty claude opencode git ruff; do
+for pkg in zsh tmux herdr helix kitty claude opencode git ruff; do
   stow -v -R -t "$HOME" "$pkg"
 done
 

@@ -1,0 +1,106 @@
+#!/bin/zsh
+set -e
+
+[[ -d /opt/homebrew/bin ]] && export PATH="/opt/homebrew/bin:$PATH"
+
+server_running() {
+    herdr status server >/dev/null 2>&1
+}
+
+if ! server_running; then
+    herdr server >/tmp/herdr-server.log 2>&1 &
+    for _ in {1..100}; do
+        server_running && break
+        sleep 0.1
+    done
+fi
+
+if ! server_running; then
+    echo "herdr server did not start" >&2
+    exit 1
+fi
+
+workspace_id_by_label() {
+    herdr workspace list 2>/dev/null |
+        jq -r --arg label "$1" '
+            .result.workspaces[]? |
+            select(.label == $label) |
+            .workspace_id
+        ' |
+        head -n 1
+}
+
+adoptable_default_workspace() {
+    herdr workspace list 2>/dev/null |
+        jq -r '
+            .result.workspaces[]? |
+            select(.label == "~") |
+            .workspace_id
+        ' |
+        head -n 1
+}
+
+create_workspace() {
+    herdr workspace create --cwd "$2" --label "$1" --no-focus 2>/dev/null |
+        jq -r '.result.workspace.workspace_id // empty'
+}
+
+root_pane_for_workspace() {
+    herdr pane list --workspace "$1" 2>/dev/null |
+        jq -r '.result.panes[0].pane_id // empty'
+}
+
+workspace_has_process() {
+    local workspace_id="$1"
+    local process_name="$2"
+    local pane_id
+
+    for pane_id in $(herdr pane list --workspace "$workspace_id" 2>/dev/null | jq -r '.result.panes[]?.pane_id'); do
+        [[ -n "$pane_id" ]] || continue
+        herdr pane process-info --pane "$pane_id" 2>/dev/null |
+            jq -e --arg process_name "$process_name" '
+                .result.process_info.foreground_processes[]? |
+                select(.name == $process_name or .argv0 == $process_name)
+            ' >/dev/null && return 0
+    done
+
+    return 1
+}
+
+ensure_workspace() {
+    local label="$1"
+    local cwd="$2"
+    local workspace_id
+
+    workspace_id=$(workspace_id_by_label "$label")
+    if [[ -z "$workspace_id" && "$label" == "default" ]]; then
+        workspace_id=$(adoptable_default_workspace)
+        if [[ -n "$workspace_id" ]]; then
+            herdr workspace rename "$workspace_id" default >/dev/null 2>&1 || true
+        fi
+    fi
+    if [[ -z "$workspace_id" ]]; then
+        workspace_id=$(create_workspace "$label" "$cwd")
+    fi
+    printf '%s\n' "$workspace_id"
+}
+
+default_workspace=$(ensure_workspace default "$HOME")
+btop_workspace=$(ensure_workspace btop "$HOME")
+
+if [[ -n "$btop_workspace" ]] && ! workspace_has_process "$btop_workspace" btop; then
+    btop_pane=$(root_pane_for_workspace "$btop_workspace")
+    if [[ -n "$btop_pane" ]]; then
+        herdr pane run "$btop_pane" btop >/dev/null 2>&1 || true
+    fi
+fi
+
+if [[ -n "$default_workspace" ]]; then
+    herdr workspace focus "$default_workspace" >/dev/null 2>&1 || true
+fi
+
+if [[ "${HERDR_INIT_NO_ATTACH:-}" == "1" ]]; then
+    exit 0
+fi
+
+exec herdr

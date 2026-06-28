@@ -8,6 +8,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 
 - `zsh/` — `.zshrc` (Oh My Zsh, fzf, zoxide, starship, aliases, local AI functions) + `.local/bin/` scripts
 - `tmux/` — `.tmux.conf` (prefix `C-a`, TPM, flexoki dark theme)
+- `herdr/` — `.config/herdr/config.toml` (experimental tmux-like Herdr bindings)
 - `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into tmux)
 - `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)
 - `ruff/` — `.config/ruff/pyproject.toml` (global Ruff lint defaults)
@@ -23,6 +24,10 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 | `sessionizer` | fzf over `~/Projects` + `~/Projects/cpi`; creates/attaches sessions, activates `.venv` |
 | `tmux-yazi` | Yazi chooser popup; text files → `hx`, others → system opener |
 | `tmux-obsidian` | Opens `$vault/Inbox.md` in helix (reads `~/.zsh_secrets`) |
+| `herdr-sessionizer` | fzf project picker; creates/focuses Herdr workspaces and tabs |
+| `herdr-space-switcher` | fzf over Herdr spaces only; focuses selected space |
+| `herdr-yazi` | Yazi chooser temporary pane; text files open in the previously active Herdr pane |
+| `herdr-init-default` | Starts/attaches Herdr, ensures `default` and `btop` spaces |
 
 ### `.zshrc` functions
 

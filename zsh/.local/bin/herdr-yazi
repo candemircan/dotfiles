@@ -1,0 +1,34 @@
+#!/bin/zsh
+set -e
+
+unset KITTY_WINDOW_ID
+unset KITTY_PID
+unset TERM_PROGRAM
+export TERM=xterm-256color
+
+target_pane="$HERDR_ACTIVE_PANE_ID"
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+
+yazi --chooser-file="$tmp" 2>/dev/null
+[[ ! -s "$tmp" ]] && exit 0
+
+file=$(cat "$tmp")
+mime=$(file --mime-type -b "$file")
+
+case "$mime" in
+    text/*|application/json|application/xml|inode/x-empty)
+        if [[ -n "$target_pane" ]]; then
+            herdr pane run "$target_pane" "hx $(printf '%q' "$file")" >/dev/null
+        else
+            hx "$file"
+        fi
+        ;;
+    *)
+        if [[ "$(uname)" == "Darwin" ]]; then
+            open "$file"
+        else
+            xdg-open "$file" &>/dev/null &
+        fi
+        ;;
+esac

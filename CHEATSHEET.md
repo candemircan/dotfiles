@@ -96,3 +96,37 @@ Prefix is `C-a` (Ctrl+A).
 - `C-a i` — quick-open Inbox.md (for capturing thoughts).
 - `C-a o` — fuzzy search all notes by path; paths shown relative to vault root.
 - Requires `export vault="/path/to/vault"` in `~/.zsh_secrets`.
+
+---
+
+## Herdr Trial
+
+Prefix is also `C-a`.
+
+| Key | Action |
+|---|---|
+| `C-f` | Project picker — creates/focuses a Herdr workspace |
+| `C-a s` | Space switcher |
+| `C-a S` | Full navigator |
+| `C-a d` | Detach |
+| `C-a r` | Reload Herdr config |
+| `C-a D` | Close current/selected space |
+| `C-a g` | Lazygit temporary pane |
+| `C-a y` | Yazi temporary pane |
+| `C-a i` | Open Obsidian Inbox.md in helix |
+| `C-a o` / `M-p` | Fuzzy Obsidian note search |
+| `C-a h/j/k/l` | Move between panes |
+| `C-h/j/k/l` | Resize pane via Herdr CLI command |
+| `C-a z` | Zoom/unzoom pane |
+| `C-a c` | New tab |
+| `C-a ,` | Rename tab |
+| `C-a 1-9` | Jump to tab |
+| `C-a Shift-9` | Open btop temporary pane |
+| `C-a [` | Copy mode |
+| `C-a b` | Hide/show sidebar |
+
+Trial notes:
+
+- Herdr has temporary panes, not tmux popups, so popup workflows are close but not identical.
+- New Kitty terminals launch Herdr through `herdr-init-default`.
+- `herdr-init-default` ensures `default` and `btop` spaces exist, starts `btop`, focuses `default`, then attaches Herdr.

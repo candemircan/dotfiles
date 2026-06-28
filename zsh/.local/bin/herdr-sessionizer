@@ -1,0 +1,60 @@
+#!/bin/zsh
+set -e
+
+source ~/.zsh_secrets 2>/dev/null || true
+[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+[[ -d /opt/homebrew/bin ]] && export PATH="/opt/homebrew/bin:$PATH"
+
+selected=$(
+    { find "$HOME/Projects" -mindepth 1 -maxdepth 1 -type d
+      find "$HOME/Projects/cpi" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+      echo "$HOME/dotfiles"
+      [[ -n "$vault" ]] && echo "$vault"
+    } | fzf --prompt="  "
+)
+[[ -z "$selected" ]] && exit 0
+
+name=$(basename "$selected" | tr '. ' '__')
+
+workspace_id=$(
+    herdr workspace list 2>/dev/null |
+        jq -r --arg selected "$selected" --arg name "$name" '
+            .workspaces[]? |
+            select((.cwd // .root_cwd // "") == $selected or (.label // "") == $name) |
+            .id
+        ' |
+        head -n 1
+)
+
+if [[ -n "$workspace_id" ]]; then
+    herdr workspace focus "$workspace_id" >/dev/null
+    exit 0
+fi
+
+created=$(
+    herdr workspace create --cwd "$selected" --label "$name" --focus 2>/dev/null || true
+)
+
+workspace_id=$(
+    printf '%s\n' "$created" |
+        jq -r '.id // .workspace.id // empty' 2>/dev/null |
+        head -n 1
+)
+
+if [[ -z "$workspace_id" ]]; then
+    workspace_id=$(
+        herdr workspace list 2>/dev/null |
+            jq -r --arg selected "$selected" --arg name "$name" '
+                .workspaces[]? |
+                select((.cwd // .root_cwd // "") == $selected or (.label // "") == $name) |
+                .id
+            ' |
+            head -n 1
+    )
+fi
+
+if [[ -n "$workspace_id" ]]; then
+    herdr tab create --workspace "$workspace_id" --cwd "$selected" --label shell >/dev/null 2>&1 || true
+    herdr tab create --workspace "$workspace_id" --cwd "$selected" --label shell >/dev/null 2>&1 || true
+    herdr workspace focus "$workspace_id" >/dev/null 2>&1 || true
+fi

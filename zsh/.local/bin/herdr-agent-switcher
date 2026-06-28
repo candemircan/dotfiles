@@ -1,0 +1,26 @@
+#!/bin/zsh
+set -e
+
+[[ -d /opt/homebrew/bin ]] && export PATH="/opt/homebrew/bin:$PATH"
+
+selected=$(
+    herdr agent list 2>/dev/null |
+        jq -r '
+            .result.agents[]? |
+            [
+                .terminal_id,
+                (if .focused then "*" else " " end),
+                .agent,
+                (.agent_status // "unknown"),
+                (.workspace_id // "-"),
+                ((.cwd // .foreground_cwd // "-") | split("/") | last)
+            ] |
+            @tsv
+        ' |
+        fzf --prompt="agent: " --with-nth=2,3,4,5,6 --delimiter=$'\t'
+)
+
+[[ -z "$selected" ]] && exit 0
+
+target=$(printf '%s\n' "$selected" | cut -f1)
+[[ -n "$target" ]] && herdr agent focus "$target" >/dev/null

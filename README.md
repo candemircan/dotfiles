@@ -23,7 +23,8 @@ To only symlink without installing:
 | Package | What it configures |
 |---|---|
 | `zsh` | Oh My Zsh, fzf, zoxide, starship, aliases, local scripts |
-| `tmux` | Prefix `C-a`, TPM, sessionizer, popups, flexoki dark |
+| `tmux` | Legacy tmux config kept for rollback |
+| `herdr` | Prefix `C-a`, sessionizer, temporary panes, default/btop spaces |
 | `helix` | Gruvbox dark, REPL pipe to ipython, serpl, LSP config |
 | `ruff` | Global Ruff defaults (`~/.config/ruff/pyproject.toml`) |
 | `kitty` | RobotoMono Nerd Font, gruvbox theme, boots into tmux |
@@ -33,6 +34,8 @@ To only symlink without installing:
 ## Tools installed
 
 `stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide` via Homebrew (macOS) or apt/curl (Linux), plus kitty, Firefox, Brave, Spotify, VS Code, Claude Code, Gemini CLI, OpenCode.
+
+Kitty starts Herdr through `~/.local/bin/herdr-init-default`, which ensures `default` and `btop` spaces exist before attaching.
 
 macOS also installs `llama-cpp` and downloads `gpt-oss-20b` and `Devstral-Small-2` GGUF models for local/offline inference.
 

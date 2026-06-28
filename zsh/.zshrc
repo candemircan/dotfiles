@@ -1,8 +1,5 @@
 [ -f ~/.zsh_secrets ] && source ~/.zsh_secrets
 
-#  Performance: Skip slow security checks
-export ZSH_DISABLE_COMPFIX="true"
-
 # Performance: Smarter Path Management (Avoid duplicates)
 typeset -U path  # Keep path unique
 path=(
@@ -14,19 +11,77 @@ path=(
 )
 
 
-# Oh My Zsh Setup
+# Lightweight shell setup. Loading all of Oh My Zsh runs compinit on every new
+# shell, which dominates pane startup time in tmux/herdr.
 export ZSH="$HOME/.oh-my-zsh"
-zstyle ':omz:update' mode disabled
-ZSH_THEME="" # Using Starship instead
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+export ZSH_CUSTOM="${ZSH_CUSTOM:-$ZSH/custom}"
+export ZSH_CACHE_DIR="${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh}"
+mkdir -p "$ZSH_CACHE_DIR/completions" 2>/dev/null
+fpath=(
+    "$ZSH_CACHE_DIR/completions"
+    "$ZSH/functions"
+    "$ZSH/completions"
+    "$ZSH_CUSTOM/functions"
+    "$ZSH_CUSTOM/completions"
+    "$ZSH/plugins/git"
+    $fpath
+)
 
-source $ZSH/oh-my-zsh.sh
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+alias gapa='git add --patch'
+alias gau='git add --update'
+alias gb='git branch'
+alias gba='git branch --all'
+alias gbd='git branch --delete'
+alias gcb='git checkout -b'
+alias gco='git checkout'
+alias gc='git commit --verbose'
+alias gca='git commit --verbose --all'
+alias gcmsg='git commit --message'
+alias gd='git diff'
+alias gdca='git diff --cached'
+alias gl='git pull'
+alias gp='git push'
+alias gst='git status'
+alias grt='cd "$(git rev-parse --show-toplevel || echo .)"'
 
-if [ -f ~/.fzf.zsh ]; then
-  source ~/.fzf.zsh
-elif [ -d /usr/share/doc/fzf/examples ]; then
-  source /usr/share/doc/fzf/examples/key-bindings.zsh
-  source /usr/share/doc/fzf/examples/completion.zsh
+if [[ -o interactive && -t 0 && -t 1 && -r "$ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  source "$ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+
+autoload -Uz compinit
+zstyle ':completion:*' menu select
+
+_lazy_compinit() {
+    (( ${+_ZSH_COMPINIT_LOADED} )) && return
+    typeset -g _ZSH_COMPINIT_LOADED=1
+    compinit -C -d "${ZSH_COMPDUMP:-${ZDOTDIR:-$HOME}/.zcompdump-${HOST%%.*}-${ZSH_VERSION}}"
+}
+
+_lazy_expand_or_complete() {
+    _lazy_compinit
+    zle .expand-or-complete
+}
+
+_lazy_reverse_menu_complete() {
+    _lazy_compinit
+    zle .reverse-menu-complete
+}
+
+if [[ -o interactive && -t 0 && -t 1 ]]; then
+  zle -N expand-or-complete _lazy_expand_or_complete
+  zle -N reverse-menu-complete _lazy_reverse_menu_complete
+  bindkey '^I' expand-or-complete
+  bindkey '^[[Z' reverse-menu-complete
+
+  if [ -f ~/.fzf.zsh ]; then
+    source ~/.fzf.zsh
+  elif [ -d /usr/share/doc/fzf/examples ]; then
+    source /usr/share/doc/fzf/examples/key-bindings.zsh
+    source /usr/share/doc/fzf/examples/completion.zsh
+  fi
 fi
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
@@ -41,8 +96,6 @@ alias p='bat --style=plain --paging=never'
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
-
-zstyle ':completion:*' menu select
 
 count() {
     if [ "$1" == "-h" ]; then
@@ -59,10 +112,10 @@ eval "$(starship init zsh)"
 # Zoxide (jump with z)
 eval "$(zoxide init zsh)"
 
-# SSH: auto-attach to tmux on remote hosts
+# SSH: use Herdr's native remote attach for simple host connections.
 ssh() {
-    if [[ $# -eq 1 ]]; then
-        command ssh -t "$1" -- 'tmux attach 2>/dev/null || tmux new-session 2>/dev/null || $SHELL'
+    if [[ $# -eq 1 && "$1" != -* ]]; then
+        command herdr --remote "$1"
     else
         command ssh "$@"
     fi
@@ -76,6 +129,10 @@ sn() {
 }
 
 setopt GLOB_DOTS
+
+if [[ -o interactive && -t 0 && -t 1 && -r "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  source "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 
 
 # Added by Antigravity CLI installer

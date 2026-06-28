@@ -1,0 +1,157 @@
+onboarding = false
+
+[theme]
+name = "terminal"
+
+[terminal]
+shell_mode = "auto"
+new_cwd = "follow"
+
+[update]
+channel = "stable"
+
+[keys]
+prefix = "ctrl+a"
+detach = "prefix+d"
+reload_config = "prefix+r"
+resize_mode = "prefix+shift+r"
+workspace_picker = "prefix+w"
+goto = "prefix+shift+s"
+open_notification_target = ""
+rename_workspace = "prefix+$"
+close_workspace = "prefix+shift+d"
+previous_agent = "prefix+p"
+next_agent = "prefix+n"
+new_tab = "prefix+c"
+rename_tab = "prefix+comma"
+switch_tab = "prefix+1..9"
+copy_mode = "prefix+["
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+zoom = "prefix+z"
+split_vertical = "prefix+v"
+split_horizontal = "prefix+minus"
+close_pane = "prefix+x"
+navigate_pane_left = "h"
+navigate_pane_down = "j"
+navigate_pane_up = "k"
+navigate_pane_right = "l"
+
+# Prefix-free pane resizing, matching the tmux setup.
+[[keys.command]]
+key = "ctrl+k"
+type = "shell"
+command = "herdr pane resize --direction up --amount 0.05 --pane \"$HERDR_ACTIVE_PANE_ID\""
+description = "resize pane up"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "shell"
+command = "herdr pane resize --direction down --amount 0.05 --pane \"$HERDR_ACTIVE_PANE_ID\""
+description = "resize pane down"
+
+[[keys.command]]
+key = "ctrl+h"
+type = "shell"
+command = "herdr pane resize --direction left --amount 0.05 --pane \"$HERDR_ACTIVE_PANE_ID\""
+description = "resize pane left"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "shell"
+command = "herdr pane resize --direction right --amount 0.05 --pane \"$HERDR_ACTIVE_PANE_ID\""
+description = "resize pane right"
+
+[[keys.command]]
+key = "prefix+%"
+type = "shell"
+command = "herdr pane split --current --direction right --focus"
+description = "split pane right"
+
+[[keys.command]]
+key = "prefix+\""
+type = "shell"
+command = "herdr pane split --current --direction down --focus"
+description = "split pane down"
+
+[[keys.command]]
+key = "ctrl+f"
+type = "pane"
+command = "~/.local/bin/herdr-sessionizer"
+description = "sessionizer"
+
+[[keys.command]]
+key = "prefix+s"
+type = "pane"
+command = "~/.local/bin/herdr-space-switcher"
+description = "space switcher"
+
+[[keys.command]]
+key = "prefix+a"
+type = "pane"
+command = "~/.local/bin/herdr-agent-switcher"
+description = "agent switcher"
+
+[[keys.command]]
+key = "prefix+g"
+type = "pane"
+command = "lazygit"
+description = "lazygit"
+
+[[keys.command]]
+key = "prefix+y"
+type = "pane"
+command = "~/.local/bin/herdr-yazi"
+description = "yazi"
+
+[[keys.command]]
+key = "prefix+i"
+type = "pane"
+command = "~/.local/bin/tmux-obsidian"
+description = "obsidian inbox"
+
+[[keys.command]]
+key = "prefix+o"
+type = "pane"
+command = "zsh -lc 'source ~/.zshrc && sn'"
+description = "obsidian note search"
+
+[[keys.command]]
+key = "alt+p"
+type = "pane"
+command = "zsh -lc 'source ~/.zshrc && sn'"
+description = "obsidian note search"
+
+[[keys.command]]
+key = "prefix+shift+9"
+type = "pane"
+command = "btop"
+description = "btop"
+
+[ui]
+mouse_capture = true
+confirm_close = true
+prompt_new_tab_name = false
+pane_borders = true
+pane_gaps = false
+accent = "#205ea6"
+
+agent_panel_sort = "spaces"
+[ui.toast]
+delivery = "terminal"
+
+[ui.sound]
+enabled = false
+
+[session]
+resume_agents_on_restore = true
+
+[remote]
+manage_ssh_config = true
+
+[experimental]
+pane_history = false
+allow_nested = false
+kitty_graphics = false
