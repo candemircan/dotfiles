@@ -14,6 +14,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 - `ruff/` — `.config/ruff/pyproject.toml` (global Ruff lint defaults)
 - `claude/` —  agent skills (`baklavacutter`, `docments-to-docstrings`) + `managed-settings.json` (machine-level safety policies)
 - `opencode/` — `.config/opencode/` (opencode.json config, package.json plugin deps)
+- `pi/` — `.pi/agent/` (Pi defaults and OpenCode Go model provider)
 - `git/` — `.gitconfig` (shared settings); user name/email go in `~/.gitconfig.local` (not tracked)
 
 ### `zsh/.local/bin/` scripts
@@ -46,7 +47,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 
 
 
-Skills from `~/.agent-skills/` are symlinked into all four skills directories.
+Skills from `~/.agent-skills/` are symlinked into Claude, OpenCode, and Pi skills directories.
 
 `claude/managed-settings.json` contains machine-level Claude Code safety policies. `stow.sh` prompts to install it to:
 - macOS: `/Library/Application Support/ClaudeCode/managed-settings.json`

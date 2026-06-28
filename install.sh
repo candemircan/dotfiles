@@ -212,10 +212,14 @@ install_common() {
     info "Installing OpenCode..."
     curl -fsSL https://opencode.ai/install | bash
   fi
-  if ! command_exists gemini; then
-    info "Installing Gemini CLI..."
-    yes | npm install -g @google/gemini-cli 2>/dev/null || warn "gemini-cli install failed (check package name)"
+  if ! command_exists pi; then
+    info "Installing Pi Coding Agent..."
+    curl -fsSL https://pi.dev/install.sh | sh
   fi
+
+  info "Installing Pi packages..."
+  pi install npm:pi-web-access --no-approve || warn "pi-web-access install failed"
+  pi install git:github.com/huggingface/pi-llama --no-approve || warn "pi-llama install failed"
 
   # python stuff
   uv tool install ruff

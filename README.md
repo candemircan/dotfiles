@@ -28,12 +28,13 @@ To only symlink without installing:
 | `helix` | Gruvbox dark, REPL pipe to ipython, serpl, LSP config |
 | `ruff` | Global Ruff defaults (`~/.config/ruff/pyproject.toml`) |
 | `kitty` | RobotoMono Nerd Font, gruvbox theme, boots into Herdr |
-| `claude` | Shared coding guidelines + agent skills (all 4 agents) |
+| `claude` | Shared coding guidelines + agent skills |
 | `opencode` | opencode.json config + plugin deps |
+| `pi` | Pi Coding Agent defaults + OpenCode Go model provider |
 
 ## Tools installed
 
-`stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide` via Homebrew (macOS) or apt/curl (Linux), plus kitty, Firefox, Brave, Spotify, VS Code, Claude Code, Gemini CLI, OpenCode.
+`stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide` via Homebrew (macOS) or apt/curl (Linux), plus kitty, Firefox, Brave, Spotify, VS Code, Claude Code, OpenCode, and Pi Coding Agent.
 
 Kitty starts Herdr through `~/.local/bin/herdr-init-default`, which ensures `default` and `btop` spaces exist before attaching.
 

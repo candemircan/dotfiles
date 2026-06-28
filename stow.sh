@@ -15,6 +15,15 @@ for f in .zshrc .gitconfig; do
   fi
 done
 
+for f in .pi/agent/settings.json .pi/agent/models.json; do
+  if [ -f "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
+    mv "$HOME/$f" "$HOME/$f.bak"
+    echo "Backed up existing $f to $f.bak"
+  elif [ -L "$HOME/$f" ]; then
+    rm "$HOME/$f"
+  fi
+done
+
 # Fix: Clean up old symlinks inside the opencode package before running Stow
 # This prevents GNU Stow from throwing absolute symlink conflict errors.
 OPENCODE_SKILL_DIR="$DOTFILES_DIR/opencode/.config/opencode/skills"
@@ -23,14 +32,14 @@ if [ -d "$OPENCODE_SKILL_DIR" ]; then
 fi
 
 # Run GNU Stow
-for pkg in zsh tmux herdr helix kitty claude opencode git ruff; do
+for pkg in zsh tmux herdr helix kitty claude opencode pi git ruff; do
   stow -v -R -t "$HOME" "$pkg"
 done
 
 # Link skills into each agent's skills directory
 SKILL_DIRS=(
   "$HOME/.claude/skills"
-  "$HOME/.gemini/skills"
+  "$HOME/.pi/agent/skills"
 )
 
 # Re-create directory and link skills for opencode package
@@ -42,6 +51,9 @@ done
 
 # Link skills for other AI agents
 mkdir -p "${SKILL_DIRS[@]}"
+for dest in "${SKILL_DIRS[@]}"; do
+  find "$dest" -type l -delete
+done
 for skill_dir in "$HOME/.agent-skills"/*/; do
   [ -d "$skill_dir" ] || continue
   skill_name=$(basename "$skill_dir")
