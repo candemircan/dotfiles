@@ -1,3 +1,7 @@
+---
+name: shell-guard
+description: Manage Pi shell guard safety rules and dangerous command approval. Use when the user asks about shell guard status, rules, approvals, the --unsafe flag, or editing shell guard configuration.
+---
 # Shell Guard
 
 Use this skill when the user asks about Pi shell guard, dangerous command approval, the `--unsafe` flag, or editing shell guard rules.

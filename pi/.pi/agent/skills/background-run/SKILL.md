@@ -1,3 +1,7 @@
+---
+name: background-run
+description: Run long commands in a visible Herdr tab or tmux window via Pi's background_run tool or /background-run command. Use when the user asks to offload long-running commands, keep progress visible, or continue execution outside the chat.
+---
 # Background Run
 
 Use this skill when the user asks about running long commands in the background, offloading commands to Herdr or tmux, the `background_run` tool, or `/background-run`.
