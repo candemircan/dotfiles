@@ -260,7 +260,7 @@ export default function (pi: ExtensionAPI) {
 	});
 
 	pi.on("tool_call", async (event, ctx) => {
-		if (event.toolName !== "bash") return undefined;
+		if (event.toolName !== "bash" && event.toolName !== "background_run") return undefined;
 
 		const command = String((event.input as { command?: unknown }).command ?? "");
 		const result = await guardCommand(command, ctx, "model");

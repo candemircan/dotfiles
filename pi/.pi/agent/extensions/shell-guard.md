@@ -4,9 +4,10 @@ Global Pi extension that guards dangerous shell commands before they run.
 
 ## What it protects
 
-The extension checks both:
+The extension checks:
 
 - model-initiated `bash` tool calls
+- model-initiated `background_run` tool calls, when that extension is installed
 - user `!command` / `!!command` shell commands
 
 Matching commands require approval in interactive Pi sessions. In non-interactive modes, matching commands are blocked by default.

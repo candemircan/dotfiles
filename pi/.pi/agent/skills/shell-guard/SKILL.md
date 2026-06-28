@@ -5,7 +5,7 @@ Use this skill when the user asks about Pi shell guard, dangerous command approv
 ## Summary
 
 A global Pi shell guard extension is installed at `~/.pi/agent/extensions/shell-guard.ts`.
-It checks model `bash` tool calls and user `!` / `!!` shell commands before execution.
+It checks model `bash` tool calls, model `background_run` tool calls when that extension is installed, and user `!` / `!!` shell commands before execution.
 
 ## Commands
 
