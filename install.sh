@@ -22,7 +22,7 @@ install_macos() {
   fi
 
   info "Installing Homebrew formulae..."
-  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat git-delta glow ripgrep fd llama.cpp
+  brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat git-delta glow ripgrep fd jq llama.cpp
 
   info "Installing Homebrew casks..."
   brew install --cask firefox brave-browser visual-studio-code rectangle alfred kitty spotify
@@ -38,7 +38,7 @@ install_linux() {
 
   info "Updating apt and installing base packages..."
   sudo apt update
-  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty bat ripgrep fd-find
+  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty bat ripgrep fd-find jq
 
   if ! command_exists delta; then
     info "Installing git-delta..."

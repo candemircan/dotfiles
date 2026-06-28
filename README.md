@@ -29,7 +29,7 @@ To only symlink without installing:
 | `ruff` | Global Ruff defaults (`~/.config/ruff/pyproject.toml`) |
 | `kitty` | RobotoMono Nerd Font, gruvbox theme, boots into Herdr |
 | `claude` | Shared coding guidelines + agent skills |
-| `opencode` | opencode.json config + plugin deps |
+| `opencode` | opencode.json config |
 | `pi` | Pi Coding Agent defaults + OpenCode Go model provider |
 
 ## Tools installed

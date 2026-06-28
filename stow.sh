@@ -15,7 +15,18 @@ for f in .zshrc .gitconfig; do
   fi
 done
 
-for f in .pi/agent/settings.json .pi/agent/models.json; do
+for f in \
+  .pi/agent/settings.json \
+  .pi/agent/models.json \
+  .pi/agent/background-run.json \
+  .pi/agent/shell-guard.json \
+  .pi/agent/extensions/background-run.md \
+  .pi/agent/extensions/background-run.ts \
+  .pi/agent/extensions/shell-guard.md \
+  .pi/agent/extensions/shell-guard.ts \
+  .pi/agent/skills/background-run \
+  .pi/agent/skills/shell-guard
+do
   if [ -f "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
     mv "$HOME/$f" "$HOME/$f.bak"
     echo "Backed up existing $f to $f.bak"
@@ -24,47 +35,57 @@ for f in .pi/agent/settings.json .pi/agent/models.json; do
   fi
 done
 
-# Fix: Clean up old symlinks inside the opencode package before running Stow
-# This prevents GNU Stow from throwing absolute symlink conflict errors.
-OPENCODE_SKILL_DIR="$DOTFILES_DIR/opencode/.config/opencode/skills"
-if [ -d "$OPENCODE_SKILL_DIR" ]; then
-  find "$OPENCODE_SKILL_DIR" -type l -delete
-fi
-
-# Run GNU Stow
-for pkg in zsh tmux herdr helix kitty claude opencode pi git ruff; do
-  stow -v -R -t "$HOME" "$pkg"
+# Clean up old generated skill symlinks inside packages before running Stow.
+# These are runtime links and should not become part of stowed source trees.
+for repo_skill_dir in \
+  "$DOTFILES_DIR/claude/.claude/skills" \
+  "$DOTFILES_DIR/opencode/.config/opencode/skills" \
+  "$DOTFILES_DIR/pi/.pi/agent/skills"
+do
+  if [ -d "$repo_skill_dir" ]; then
+    find "$repo_skill_dir" -type l -delete
+  fi
 done
 
-# Link skills into each agent's skills directory
+# Run GNU Stow. --no-folding keeps parent config directories real so runtime
+# skill symlinks are created in $HOME instead of inside this repository.
+for pkg in zsh tmux herdr helix kitty claude opencode pi git ruff; do
+  stow --no-folding -v -R -t "$HOME" "$pkg"
+done
+
+# Link skills into each agent's runtime skills directory.
 SKILL_DIRS=(
   "$HOME/.claude/skills"
+  "$HOME/.config/opencode/skills"
   "$HOME/.pi/agent/skills"
 )
 
-# Re-create directory and link skills for opencode package
-mkdir -p "$OPENCODE_SKILL_DIR"
-for skill_dir in "$HOME/.agent-skills"/*/; do
-  [ -d "$skill_dir" ] || continue
-  ln -sfn "$skill_dir" "$OPENCODE_SKILL_DIR/$(basename "$skill_dir")"
-done
+remove_generated_skill_links() {
+  local dest="$1"
+  local link target
 
-# Link skills for other AI agents
+  [ -d "$dest" ] || return 0
+  for link in "$dest"/*; do
+    [ -L "$link" ] || continue
+    target=$(readlink "$link")
+    case "$target" in
+      *"/.agent-skills/"*) rm "$link" ;;
+    esac
+  done
+}
+
 mkdir -p "${SKILL_DIRS[@]}"
 for dest in "${SKILL_DIRS[@]}"; do
-  find "$dest" -type l -delete
-done
-for skill_dir in "$HOME/.agent-skills"/*/; do
-  [ -d "$skill_dir" ] || continue
-  skill_name=$(basename "$skill_dir")
-  for dest in "${SKILL_DIRS[@]}"; do
-    ln -sfn "$skill_dir" "$dest/$skill_name"
+  remove_generated_skill_links "$dest"
+  for skill_dir in "$HOME/.agent-skills"/*/; do
+    [ -d "$skill_dir" ] || continue
+    ln -sfn "$skill_dir" "$dest/$(basename "$skill_dir")"
   done
 done
 
 
 # Claude Code managed settings (machine-level safety policies)
-MANAGED_SRC="$DOTFILES_DIR/claude/managed-settings.json"
+MANAGED_SRC="$DOTFILES_DIR/claude/.claude/managed-settings.json"
 if [ -f "$MANAGED_SRC" ]; then
   case "$(uname -s)" in
     Darwin) MANAGED_DEST="/Library/Application Support/ClaudeCode/managed-settings.json" ;;
@@ -73,7 +94,7 @@ if [ -f "$MANAGED_SRC" ]; then
   esac
   if [ -n "$MANAGED_DEST" ]; then
     printf 'Install Claude Code managed settings to %s? [y/N] ' "$MANAGED_DEST"
-    read -r answer
+    read -r answer || answer=""
     if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
       sudo mkdir -p "$(dirname "$MANAGED_DEST")"
       sudo cp "$MANAGED_SRC" "$MANAGED_DEST"
