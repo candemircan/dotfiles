@@ -76,6 +76,12 @@ install_linux() {
     export PATH="$HOME/.local/bin:$PATH"
   fi
 
+  # llama.cpp
+  if ! command_exists llama-cli; then
+    info "Installing llama.cpp..."
+    curl -LsSf https://llama.app/install.sh | sh
+  fi
+
   # Helix (GitHub binary release)
   if ! command_exists hx; then
     info "Installing Helix..."
