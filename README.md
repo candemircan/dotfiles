@@ -24,10 +24,10 @@ To only symlink without installing:
 |---|---|
 | `zsh` | Oh My Zsh, fzf, zoxide, starship, aliases, local scripts |
 | `tmux` | Legacy tmux config kept for rollback |
-| `herdr` | Prefix `C-a`, sessionizer, temporary panes, default/btop spaces |
+| `herdr` | Primary workspace manager: prefix `C-a`, native navigator, temporary panes, default/btop spaces |
 | `helix` | Gruvbox dark, REPL pipe to ipython, serpl, LSP config |
 | `ruff` | Global Ruff defaults (`~/.config/ruff/pyproject.toml`) |
-| `kitty` | RobotoMono Nerd Font, gruvbox theme, boots into tmux |
+| `kitty` | RobotoMono Nerd Font, gruvbox theme, boots into Herdr |
 | `claude` | Shared coding guidelines + agent skills (all 4 agents) |
 | `opencode` | opencode.json config + plugin deps |
 

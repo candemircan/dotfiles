@@ -7,9 +7,9 @@ GNU Stow-based dotfiles repo for macOS and Linux.
 Each top-level directory is a stow package symlinked into `$HOME`:
 
 - `zsh/` — `.zshrc` (Oh My Zsh, fzf, zoxide, starship, aliases, local AI functions) + `.local/bin/` scripts
-- `tmux/` — `.tmux.conf` (prefix `C-a`, TPM, flexoki dark theme)
-- `herdr/` — `.config/herdr/config.toml` (experimental tmux-like Herdr bindings)
-- `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into tmux)
+- `herdr/` — `.config/herdr/config.toml` (primary terminal workspace manager, prefix `C-a`)
+- `tmux/` — `.tmux.conf` (legacy rollback config, prefix `C-a`, TPM, flexoki dark theme)
+- `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into Herdr)
 - `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)
 - `ruff/` — `.config/ruff/pyproject.toml` (global Ruff lint defaults)
 - `claude/` —  agent skills (`baklavacutter`, `docments-to-docstrings`) + `managed-settings.json` (machine-level safety policies)
@@ -20,7 +20,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 
 | Script | Purpose |
 |---|---|
-| `tmux-init-default` | Creates the `default` session (window 1 shell, window 9 btop) |
+| `tmux-init-default` | Legacy tmux rollback helper; creates the `default` session (window 1 shell, window 9 btop) |
 | `sessionizer` | fzf over `~/Projects` + `~/Projects/cpi`; creates/attaches sessions, activates `.venv` |
 | `tmux-yazi` | Yazi chooser popup; text files → `hx`, others → system opener |
 | `tmux-obsidian` | Opens `$vault/Inbox.md` in helix (reads `~/.zsh_secrets`) |

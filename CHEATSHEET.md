@@ -1,6 +1,6 @@
 # Cheat Sheet
 
-## Tmux
+## Herdr
 
 Prefix is `C-a` (Ctrl+A).
 
@@ -8,30 +8,35 @@ Prefix is `C-a` (Ctrl+A).
 
 | Key | Action |
 |---|---|
-| `C-f` | Sessionizer — fuzzy pick from `~/Projects`, creates or attaches session |
-| `C-a s` | Session switcher — built-in tmux list; killing current session switches to next available |
-| `C-a d` | Detach from session |
-| `C-a $` | Rename session |
+| `C-f` | Project picker — creates/focuses a Herdr workspace |
+| `C-a s` | Full navigator — spaces, tabs, and panes |
+| `C-a w` | Workspace picker |
+| `C-a d` | Detach |
+| `C-a r` | Reload Herdr config |
+| `C-a D` | Close current/selected space |
+| `C-a $` | Rename workspace |
 
-### Popups
+### Temporary panes
 
 | Key | Action |
 |---|---|
-| `C-a g` | Lazygit (opens in current pane's directory) |
-| `C-a y` | Yazi file picker — selecting a file sends `hx <file>` to window 1 |
+| `C-a g` | Lazygit temporary pane |
+| `C-a y` | Yazi temporary pane |
 | `C-a i` | Open Obsidian Inbox.md in helix |
 | `C-a o` | Fuzzy search all Obsidian notes, open selected in helix |
+| `C-a 0` | Open btop temporary pane |
 
-### Panes & windows
+### Panes & tabs
 
 | Key | Action |
 |---|---|
 | `C-a h/j/k/l` | Move between panes |
-| `C-k/j/h/l` | Resize pane (no prefix) |
+| `C-h/j/k/l` | Resize pane (no prefix) |
 | `C-a z` | Zoom/unzoom pane |
-| `C-a c` | New window |
-| `C-a ,` | Rename window |
-| `C-a 1–9` | Jump to window by number (window 9 is always btop) |
+| `C-a c` | New tab |
+| `C-a ,` | Rename tab |
+| `C-a 1-9` | Jump to tab |
+| `C-a b` | Hide/show sidebar |
 
 ### Copy mode
 
@@ -75,8 +80,8 @@ Prefix is `C-a` (Ctrl+A).
 ### Starting work on a project
 
 1. Press `C-f` → pick your project folder.
-2. A new tmux session opens with 3 windows. Window 9 is shared btop across all sessions.
-3. If the project has a `.venv`, it's activated automatically in all 3 windows.
+2. A Herdr workspace opens with shell, agent, ipython, and ssh tabs.
+3. If the project has a `.venv`, it's activated automatically in the project tabs.
 
 ### Running code from helix
 
@@ -87,9 +92,9 @@ Prefix is `C-a` (Ctrl+A).
 
 ### File navigation with yazi
 
-1. Press `C-a y` to open yazi in a popup.
+1. Press `C-a y` to open yazi in a temporary pane.
 2. Navigate to a file and press `Enter` to select.
-3. Text files open in helix on window 1. Other files open with the system viewer.
+3. Text files open in helix in the previously active Herdr pane. Other files open with the system viewer.
 
 ### Obsidian from the terminal
 
@@ -97,35 +102,7 @@ Prefix is `C-a` (Ctrl+A).
 - `C-a o` — fuzzy search all notes by path; paths shown relative to vault root.
 - Requires `export vault="/path/to/vault"` in `~/.zsh_secrets`.
 
----
-
-## Herdr Trial
-
-Prefix is also `C-a`.
-
-| Key | Action |
-|---|---|
-| `C-f` | Project picker — creates/focuses a Herdr workspace |
-| `C-a s` | Space switcher |
-| `C-a S` | Full navigator |
-| `C-a d` | Detach |
-| `C-a r` | Reload Herdr config |
-| `C-a D` | Close current/selected space |
-| `C-a g` | Lazygit temporary pane |
-| `C-a y` | Yazi temporary pane |
-| `C-a i` | Open Obsidian Inbox.md in helix |
-| `C-a o` / `M-p` | Fuzzy Obsidian note search |
-| `C-a h/j/k/l` | Move between panes |
-| `C-h/j/k/l` | Resize pane via Herdr CLI command |
-| `C-a z` | Zoom/unzoom pane |
-| `C-a c` | New tab |
-| `C-a ,` | Rename tab |
-| `C-a 1-9` | Jump to tab |
-| `C-a Shift-9` | Open btop temporary pane |
-| `C-a [` | Copy mode |
-| `C-a b` | Hide/show sidebar |
-
-Trial notes:
+Notes:
 
 - Herdr has temporary panes, not tmux popups, so popup workflows are close but not identical.
 - New Kitty terminals launch Herdr through `herdr-init-default`.
