@@ -67,7 +67,6 @@ Prefix is `C-a` (Ctrl+A).
 |---|---|
 | `z <dir>` | Jump to directory with zoxide (learns from `cd` history) |
 | `ai <prompt>` | Run opencode with a prompt |
-| `ssh host` | SSH + auto-attach to remote tmux (single-host form only) |
 | `sn` | Fuzzy Obsidian note search (same as `C-a o`) |
 
 ---

@@ -1,5 +1,15 @@
 [ -f ~/.zsh_secrets ] && source ~/.zsh_secrets
 
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=10000
+
+setopt EXTENDED_HISTORY
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_IGNORE_DUPS
+setopt HIST_VERIFY
+setopt SHARE_HISTORY
+
 # Performance: Smarter Path Management (Avoid duplicates)
 typeset -U path  # Keep path unique
 path=(
@@ -109,15 +119,6 @@ eval "$(starship init zsh)"
 
 # Zoxide (jump with z)
 eval "$(zoxide init zsh)"
-
-# SSH: use Herdr's native remote attach for simple host connections.
-ssh() {
-    if [[ $# -eq 1 && "$1" != -* ]]; then
-        command herdr --remote "$1"
-    else
-        command ssh "$@"
-    fi
-}
 
 # Obsidian note search — $vault must be exported in ~/.zsh_secrets
 sn() {
