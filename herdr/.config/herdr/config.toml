@@ -135,11 +135,12 @@ pane_gaps = false
 accent = "#205ea6"
 
 agent_panel_sort = "spaces"
+show_agent_labels_on_pane_borders = true
 [ui.toast]
-delivery = "terminal"
+delivery = "system"
 
 [ui.sound]
-enabled = false
+enabled = true
 
 [session]
 resume_agents_on_restore = true
