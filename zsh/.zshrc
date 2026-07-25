@@ -89,8 +89,13 @@ if [[ -o interactive && -t 0 && -t 1 ]]; then
   if [ -f ~/.fzf.zsh ]; then
     source ~/.fzf.zsh
   elif [ -d /usr/share/doc/fzf/examples ]; then
+    # Debian/Ubuntu
     source /usr/share/doc/fzf/examples/key-bindings.zsh
     source /usr/share/doc/fzf/examples/completion.zsh
+  elif [ -d /usr/share/fzf/shell ]; then
+    # Fedora
+    source /usr/share/fzf/shell/key-bindings.zsh
+    source /usr/share/fzf/shell/completion.zsh
   fi
 fi
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"

@@ -1,12 +1,12 @@
 {
-  "defaultModel": "gpt-5.5",
-  "defaultProvider": "openai-codex",
+  "defaultModel": "kimi-k3",
+  "defaultProvider": "opencode-go",
   "packages": [
     "npm:pi-web-access",
     "npm:@tmustier/pi-files-widget",
     "git:github.com/huggingface/pi-llama"
   ],
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "max",
   "theme": "dark",
   "lastChangelogVersion": "0.82.1"
 }

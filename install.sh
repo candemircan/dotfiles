@@ -3,6 +3,7 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 OS="$(uname -s)"
+PKG_MGR=""
 
 info()  { printf '\033[1;34m[INFO]\033[0m  %s\n' "$*"; }
 warn()  { printf '\033[1;33m[WARN]\033[0m  %s\n' "$*"; }
@@ -25,16 +26,16 @@ install_macos() {
   brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat git-delta glow ripgrep fd jq llama.cpp
 
   info "Installing Homebrew casks..."
-  brew install --cask firefox brave-browser visual-studio-code rectangle alfred kitty spotify
+  brew install --cask firefox chromium rectangle alfred kitty
 
   # Nerd Fonts
   info "Installing RobotoMono Nerd Font..."
   brew install --cask font-roboto-mono-nerd-font
 }
 
-# ---------- Linux (deb-based) ----------
-install_linux() {
-  info "Detected Linux"
+# ---------- Linux (apt-based: Debian/Ubuntu) ----------
+install_linux_apt() {
+  info "Using apt package manager"
 
   info "Updating apt and installing base packages..."
   sudo apt update
@@ -57,12 +58,12 @@ install_linux() {
     fi
   fi
 
-  # fd and bat have different names on Ubuntu - create symlinks
+  # fd and bat have different names on Debian/Ubuntu - create symlinks
   if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
-    sudo ln -sf $(which fdfind) /usr/local/bin/fd
+    sudo ln -sf "$(which fdfind)" /usr/local/bin/fd
   fi
   if command -v batcat &>/dev/null && ! command -v bat &>/dev/null; then
-    sudo ln -sf $(which batcat) /usr/local/bin/bat
+    sudo ln -sf "$(which batcat)" /usr/local/bin/bat
   fi
 
   # Node.js via nodesource
@@ -72,6 +73,73 @@ install_linux() {
     sudo apt install -y nodejs
   fi
 
+  # Chromium (Ubuntu's chromium-browser is a snap stub, so prefer the deb)
+  if ! command_exists chromium && ! command_exists chromium-browser; then
+    info "Installing Chromium..."
+    sudo apt install -y chromium || sudo apt install -y chromium-browser || warn "Chromium install failed"
+  fi
+
+  # Clipboard tools for tmux
+  if [ "${XDG_SESSION_TYPE:-}" = "wayland" ]; then
+    sudo apt install -y wl-clipboard
+  else
+    sudo apt install -y xclip
+  fi
+}
+
+# ---------- Linux (dnf-based: Fedora) ----------
+install_linux_dnf() {
+  info "Using dnf package manager (Fedora)"
+
+  info "Installing base packages via dnf..."
+  local pkgs=(
+    stow tmux zsh fzf btop kitty bat ripgrep fd-find jq
+    git-delta glow helix starship zoxide yazi lazygit uv nodejs
+    gcc gcc-c++ make curl git unzip python3-devel
+    firefox chromium
+  )
+  # --skip-unavailable lets the batch succeed even if a package is missing from
+  # this Fedora version's repos; the curl installers below act as fallback.
+  sudo dnf install -y --skip-unavailable "${pkgs[@]}" || {
+    warn "Batch install failed; trying packages one by one..."
+    for pkg in "${pkgs[@]}"; do
+      sudo dnf install -y "$pkg" || warn "Could not install $pkg"
+    done
+  }
+
+  # Full ffmpeg is patent-encumbered and only available via RPM Fusion
+  if ! command_exists ffmpeg; then
+    info "Installing ffmpeg..."
+    sudo dnf install -y ffmpeg \
+      || sudo dnf install -y ffmpeg-free \
+      || warn "ffmpeg unavailable — enable RPM Fusion for the full build"
+  fi
+
+  # Clipboard tools for tmux
+  if [ "${XDG_SESSION_TYPE:-}" = "wayland" ]; then
+    sudo dnf install -y wl-clipboard
+  else
+    sudo dnf install -y xclip
+  fi
+}
+
+# ---------- Linux dispatcher ----------
+install_linux() {
+  info "Detected Linux"
+  if command_exists dnf; then
+    PKG_MGR=dnf
+    install_linux_dnf
+  elif command_exists apt; then
+    PKG_MGR=apt
+    install_linux_apt
+  else
+    error "No supported package manager found (need dnf or apt)"
+  fi
+  install_linux_common
+}
+
+# ---------- Linux (shared, distro-agnostic installers) ----------
+install_linux_common() {
   # uv
   if ! command_exists uv; then
     info "Installing uv..."
@@ -139,35 +207,6 @@ install_linux() {
     cargo install serpl
   fi
 
-  # Firefox (already via apt above)
-
-  # Brave browser
-  if ! command_exists brave-browser; then
-    info "Installing Brave browser..."
-    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-    sudo apt update
-    sudo apt install -y brave-browser
-  fi
-
-  # Spotify
-  if ! command_exists spotify; then
-    info "Installing Spotify..."
-    curl -sS https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-    echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-    sudo apt update
-    sudo apt install -y spotify-client
-  fi
-
-  # VS Code
-  if ! command_exists code; then
-    info "Installing VS Code..."
-    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /usr/share/keyrings/packages.microsoft.gpg >/dev/null
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
-    sudo apt update
-    sudo apt install -y code
-  fi
-
   # Nerd Fonts
   if ! fc-list | grep -qi "RobotoMono Nerd Font"; then
     info "Installing RobotoMono Nerd Font..."
@@ -177,13 +216,6 @@ install_linux() {
     unzip -o /tmp/RobotoMono.zip -d "$NERD_FONT_DIR"
     rm /tmp/RobotoMono.zip
     fc-cache -fv
-  fi
-
-  # Clipboard tools for tmux
-  if [ "${XDG_SESSION_TYPE:-}" = "wayland" ]; then
-    sudo apt install -y wl-clipboard
-  else
-    sudo apt install -y xclip
   fi
 }
 
@@ -262,8 +294,8 @@ post_install() {
     chsh -s "$ZSH_PATH"
   fi
 
-  # Set kitty as default terminal (Linux)
-  if [ "$OS" = "Linux" ] && command_exists kitty; then
+  # Set kitty as default terminal (apt-based Linux only; no equivalent on Fedora)
+  if [ "$PKG_MGR" = "apt" ] && command_exists kitty; then
     info "Setting kitty as default terminal..."
     sudo update-alternatives --set x-terminal-emulator "$(command -v kitty)" 2>/dev/null || warn "Could not set kitty as default terminal"
   fi
