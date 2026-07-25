@@ -212,14 +212,15 @@ install_common() {
     git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
   fi
 
+  if ! command_exists herdr; then
+    info "Installing herdr"
+    curl -fsSL https://herdr.dev/install.sh | sh
+  fi
+
   # cli agents
   if ! command_exists claude; then
     info "Installing Claude Code..."
     curl -fsSL https://claude.ai/install.sh | bash
-  fi
-  if ! command_exists opencode; then
-    info "Installing OpenCode..."
-    curl -fsSL https://opencode.ai/install | bash
   fi
   if ! command_exists pi; then
     info "Installing Pi Coding Agent..."
