@@ -29,12 +29,11 @@ To only symlink without installing:
 | `ruff` | Global Ruff defaults (`~/.config/ruff/pyproject.toml`) |
 | `kitty` | RobotoMono Nerd Font, gruvbox theme, boots into Herdr |
 | `claude` | Shared coding guidelines + agent skills |
-| `opencode` | opencode.json config |
 | `pi` | Pi Coding Agent defaults + OpenCode Go model provider |
 
 ## Tools installed
 
-`stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide` via Homebrew (macOS), apt (Debian/Ubuntu), or dnf (Fedora), falling back to upstream curl installers on Linux, plus kitty, Firefox, Chromium, Claude Code, OpenCode, and Pi Coding Agent.
+`stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide` via Homebrew (macOS), apt (Debian/Ubuntu), or dnf (Fedora), falling back to upstream curl installers on Linux, plus kitty, Firefox, Chromium, Claude Code, and Pi Coding Agent.
 
 Kitty starts Herdr through `~/.local/bin/herdr-init-default`, which ensures `default` and `btop` spaces exist before attaching.
 

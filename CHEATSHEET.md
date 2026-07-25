@@ -66,7 +66,6 @@ Prefix is `C-a` (Ctrl+A).
 | Command | Action |
 |---|---|
 | `z <dir>` | Jump to directory with zoxide (learns from `cd` history) |
-| `ai <prompt>` | Run opencode with a prompt |
 | `sn` | Fuzzy Obsidian note search (same as `C-a o`) |
 
 ---

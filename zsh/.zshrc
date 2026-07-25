@@ -16,7 +16,6 @@ path=(
     ~/.local/bin
     ~/.config/helix
     ~/.juliaup/bin
-    ~/.opencode/bin
     $path
 )
 
@@ -141,4 +140,3 @@ fi
 
 # Added by Antigravity CLI installer
 export PATH="/Users/candemircan/.local/bin:$PATH"
-export OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS=3600000

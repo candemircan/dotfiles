@@ -39,7 +39,6 @@ done
 # These are runtime links and should not become part of stowed source trees.
 for repo_skill_dir in \
   "$DOTFILES_DIR/claude/.claude/skills" \
-  "$DOTFILES_DIR/opencode/.config/opencode/skills" \
   "$DOTFILES_DIR/pi/.pi/agent/skills"
 do
   if [ -d "$repo_skill_dir" ]; then
@@ -49,14 +48,13 @@ done
 
 # Run GNU Stow. --no-folding keeps parent config directories real so runtime
 # skill symlinks are created in $HOME instead of inside this repository.
-for pkg in zsh tmux herdr helix kitty claude opencode pi git ruff; do
+for pkg in zsh tmux herdr helix kitty claude pi git ruff; do
   stow --no-folding -v -R -t "$HOME" "$pkg"
 done
 
 # Link skills into each agent's runtime skills directory.
 SKILL_DIRS=(
   "$HOME/.claude/skills"
-  "$HOME/.config/opencode/skills"
   "$HOME/.pi/agent/skills"
 )
 
