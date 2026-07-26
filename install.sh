@@ -26,7 +26,7 @@ install_macos() {
   brew install stow uv helix tmux zsh fzf starship btop yazi lazygit serpl node zoxide bat git-delta glow ripgrep fd jq llama.cpp
 
   info "Installing Homebrew casks..."
-  brew install --cask firefox chromium rectangle alfred kitty
+  brew install --cask firefox chromium rectangle alfred kitty obsidian
 
   # Nerd Fonts
   info "Installing RobotoMono Nerd Font..."
@@ -216,6 +216,61 @@ install_linux_common() {
     unzip -o /tmp/RobotoMono.zip -d "$NERD_FONT_DIR"
     rm /tmp/RobotoMono.zip
     fc-cache -fv
+  fi
+
+  # Obsidian (AppImage — universal across distros)
+  if ! command_exists obsidian; then
+    info "Installing Obsidian via AppImage..."
+    OBSIDIAN_VERSION="$(curl -s https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | grep -Po '"tag_name": "v\K[^"]*')"
+    if [ -z "$OBSIDIAN_VERSION" ]; then
+      warn "Could not determine latest Obsidian version; skipping"
+    else
+      ARCH="$(uname -m)"
+      case "$ARCH" in
+        x86_64)        SUFFIX="" ;;
+        aarch64|arm64) SUFFIX="-arm64" ;;
+        *)             SUFFIX=""; warn "Unsupported arch '$ARCH' for Obsidian; trying x86_64 build" ;;
+      esac
+      URL="https://github.com/obsidianmd/obsidian-releases/releases/download/v${OBSIDIAN_VERSION}/Obsidian-${OBSIDIAN_VERSION}${SUFFIX}.AppImage"
+      if curl -fsSL "$URL" -o /tmp/Obsidian.AppImage; then
+        sudo install -Dm755 /tmp/Obsidian.AppImage /opt/obsidian/obsidian.AppImage
+        sudo ln -sf /opt/obsidian/obsidian.AppImage /usr/local/bin/obsidian
+        rm -f /tmp/Obsidian.AppImage
+
+        # AppImages require FUSE to mount themselves at launch
+        case "$PKG_MGR" in
+          apt) sudo apt install -y libfuse2 2>/dev/null || sudo apt install -y libfuse2t64 2>/dev/null || warn "libfuse2 install failed; AppImages may not launch" ;;
+          dnf) sudo dnf install -y fuse 2>/dev/null || true ;;
+        esac
+
+        # Desktop launcher integration (best-effort: extracts icon + writes .desktop)
+        rm -rf /tmp/squashfs-root
+        ( cd /tmp && /opt/obsidian/obsidian.AppImage --appimage-extract &>/dev/null ) || true
+        ICON_SRC="$(readlink -f /tmp/squashfs-root/.DirIcon 2>/dev/null)"
+        if [ -n "$ICON_SRC" ] && [ -f "$ICON_SRC" ]; then
+          sudo install -Dm644 "$ICON_SRC" /usr/share/icons/hicolor/512x512/apps/obsidian.png
+          sudo tee /usr/share/applications/obsidian.desktop >/dev/null <<'EOF'
+[Desktop Entry]
+Name=Obsidian
+Comment=A knowledge base that works on local Markdown files
+Exec=/usr/local/bin/obsidian %U
+Icon=obsidian
+Terminal=false
+Type=Application
+Categories=Office;Utility;TextEditor;
+StartupWMClass=Obsidian
+MimeType=x-scheme-handler/obsidian;
+EOF
+          ( command -v gtk-update-icon-cache >/dev/null && sudo gtk-update-icon-cache -f /usr/share/icons/hicolor 2>/dev/null ) || true
+          ( command -v update-desktop-database >/dev/null && sudo update-desktop-database /usr/share/applications 2>/dev/null ) || true
+        else
+          warn "Could not extract Obsidian icon; launch with 'obsidian' from terminal"
+        fi
+        rm -rf /tmp/squashfs-root
+      else
+        warn "Obsidian AppImage download failed: $URL"
+      fi
+    fi
   fi
 }
 

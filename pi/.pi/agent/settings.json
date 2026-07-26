@@ -1,5 +1,5 @@
 {
-  "defaultModel": "kimi-k3",
+  "defaultModel": "glm-5.2",
   "defaultProvider": "opencode-go",
   "packages": [
     "npm:pi-web-access",
