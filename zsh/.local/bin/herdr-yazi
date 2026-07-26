@@ -1,6 +1,9 @@
 #!/bin/zsh
 set -e
 
+[[ -d /opt/homebrew/bin ]] && export PATH="/opt/homebrew/bin:$PATH"
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
+
 unset KITTY_WINDOW_ID
 unset KITTY_PID
 unset TERM_PROGRAM

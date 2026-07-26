@@ -87,14 +87,25 @@ if [[ -o interactive && -t 0 && -t 1 ]]; then
 
   if [ -f ~/.fzf.zsh ]; then
     source ~/.fzf.zsh
-  elif [ -d /usr/share/doc/fzf/examples ]; then
-    # Debian/Ubuntu
-    source /usr/share/doc/fzf/examples/key-bindings.zsh
-    source /usr/share/doc/fzf/examples/completion.zsh
-  elif [ -d /usr/share/fzf/shell ]; then
-    # Fedora
-    source /usr/share/fzf/shell/key-bindings.zsh
-    source /usr/share/fzf/shell/completion.zsh
+  else
+    # fzf >= 0.48 bundles key-bindings + completion in `--zsh` output.
+    # (Fedora's fzf package no longer ships completion.zsh in
+    # /usr/share/fzf/shell, so sourcing the files directly breaks.)
+    _fzf_integration="$(command fzf --zsh 2>/dev/null)"
+    if [ -n "$_fzf_integration" ]; then
+      eval "$_fzf_integration"
+    elif [ -d /usr/share/doc/fzf/examples ]; then
+      # Debian/Ubuntu
+      for _f in key-bindings.zsh completion.zsh; do
+        [ -f "/usr/share/doc/fzf/examples/$_f" ] && source "/usr/share/doc/fzf/examples/$_f"
+      done
+    elif [ -d /usr/share/fzf/shell ]; then
+      # Fedora (older fzf packaging)
+      for _f in key-bindings.zsh completion.zsh; do
+        [ -f "/usr/share/fzf/shell/$_f" ] && source "/usr/share/fzf/shell/$_f"
+      done
+    fi
+    unset _fzf_integration _f
   fi
 fi
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"

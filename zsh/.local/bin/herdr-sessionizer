@@ -4,14 +4,21 @@ set -e
 source ~/.zsh_secrets 2>/dev/null || true
 [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
 [[ -d /opt/homebrew/bin ]] && export PATH="/opt/homebrew/bin:$PATH"
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 
 selected=$(
-    { find "$HOME/Projects" -mindepth 1 -maxdepth 1 -type d
-      find "$HOME/Projects/cpi/ideas" -mindepth 1 -maxdepth 1 -type d
-      find "$HOME/Projects/cpi/presentations" -mindepth 1 -maxdepth 1 -type d
-      find "$HOME/Projects/cpi" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+    { for dir in "$HOME/Projects" \
+                 "$HOME/Projects/cpi/ideas" \
+                 "$HOME/Projects/cpi/presentations" \
+                 "$HOME/Projects/cpi"; do
+        if [[ -d "$dir" ]]; then
+          find "$dir" -mindepth 1 -maxdepth 1 -type d
+        fi
+      done
       echo "$HOME/dotfiles"
-      [[ -n "$vault" ]] && echo "$vault"
+      if [[ -n "$vault" ]]; then
+        echo "$vault"
+      fi
     } | fzf --prompt="  "
 )
 [[ -z "$selected" ]] && exit 0
