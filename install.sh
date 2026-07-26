@@ -39,7 +39,7 @@ install_linux_apt() {
 
   info "Updating apt and installing base packages..."
   sudo apt update
-  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty bat ripgrep fd-find jq
+  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty bat ripgrep fd-find jq sdcv
 
   if ! command_exists delta; then
     info "Installing git-delta..."
@@ -96,7 +96,7 @@ install_linux_dnf() {
     stow tmux zsh fzf btop kitty bat ripgrep fd-find jq
     git-delta glow helix starship zoxide yazi lazygit uv nodejs
     gcc gcc-c++ make curl git unzip python3-devel
-    firefox chromium
+    firefox chromium sdcv
   )
   # --skip-unavailable lets the batch succeed even if a package is missing from
   # this Fedora version's repos; the curl installers below act as fallback.
