@@ -31,6 +31,21 @@ install_macos() {
   # Nerd Fonts
   info "Installing RobotoMono Nerd Font..."
   brew install --cask font-roboto-mono-nerd-font
+
+  # apple/container CLI (macOS 26+, Apple silicon) — used by the sandboxed
+  # `sclaude`/`spi` agent aliases
+  if [ "$(uname -m)" = "arm64" ] && [ "$(sw_vers -productVersion | cut -d. -f1)" -ge 26 ]; then
+    if ! command_exists container; then
+      info "Installing apple/container..."
+      brew install container || warn "container install failed"
+    fi
+    # The service must be started once (first run may install a Linux kernel)
+    if command_exists container; then
+      container system start || warn "Run 'container system start' once to finish container setup"
+      info "Building node22-uv sandbox image (node:22 + uv)..."
+      container build -t node22-uv "$DOTFILES_DIR/sandbox" || warn "node22-uv build failed; sandboxes will fall back to plain node:22"
+    fi
+  fi
 }
 
 # ---------- Linux (apt-based: Debian/Ubuntu) ----------
@@ -39,7 +54,7 @@ install_linux_apt() {
 
   info "Updating apt and installing base packages..."
   sudo apt update
-  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty bat ripgrep fd-find jq sdcv
+  sudo apt install -y stow tmux zsh fzf btop build-essential curl git ffmpeg gcc python3-dev kitty bat ripgrep fd-find jq sdcv rclone podman uidmap xournalpp
 
   if ! command_exists delta; then
     info "Installing git-delta..."
@@ -93,7 +108,7 @@ install_linux_dnf() {
 
   info "Installing base packages via dnf..."
   local pkgs=(
-    stow tmux zsh fzf btop kitty bat ripgrep fd-find jq
+    stow tmux zsh fzf btop kitty bat ripgrep fd-find jq rclone podman xournalpp
     git-delta glow helix starship zoxide yazi lazygit uv nodejs
     gcc gcc-c++ make curl git unzip python3-devel
     firefox chromium sdcv
@@ -145,6 +160,12 @@ install_linux_common() {
     info "Installing uv..."
     curl -LsSf https://astral.sh/uv/install.sh | sh
     export PATH="$HOME/.local/bin:$PATH"
+  fi
+
+  # node22-uv sandbox image (node:22 + uv) for the `sclaude`/`spi` aliases
+  if command_exists podman; then
+    info "Building node22-uv sandbox image (node:22 + uv)..."
+    podman build -t node22-uv "$DOTFILES_DIR/sandbox" || warn "node22-uv build failed; sandboxes will fall back to plain node:22"
   fi
 
   # llama.cpp

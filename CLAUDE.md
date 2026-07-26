@@ -14,6 +14,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 - `ruff/` — `.config/ruff/pyproject.toml` (global Ruff lint defaults)
 - `claude/` —  agent skills (`baklavacutter`, `docments-to-docstrings`) + `.claude/managed-settings.json` (machine-level safety policies)
 - `pi/` — `.pi/agent/` (Pi defaults and OpenCode Go model provider)
+- `sandbox/` — `Containerfile` for the `node22-uv` agent sandbox image (node:22 + uv). Not a stow package; built by `install.sh`, so don't add it to the stow loop
 - `git/` — `.gitconfig` (shared Git settings and identity); machine-local overrides go in `~/.gitconfig.local` (not tracked)
 
 ### `zsh/.local/bin/` scripts
@@ -34,6 +35,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 | Function | Purpose |
 |---|---|
 | `ai <prompt>` | Run opencode with a prompt |
+| `sclaude`, `spi` | Sandboxed agents — rootless OCI container (`node22-uv` = node:22 + uv, built from `sandbox/Containerfile`; falls back to plain `node:22` if unbuilt): podman on Linux (`:Z` mounts for SELinux), `apple/container` on macOS. Only `$PWD`, `.container_venv` → `.venv`, a shared uv cache (`~/.cache/uv-container`), and agent state are mounted. Claude OAuth persists via `~/.claude`; Pi gets `OPENCODE_GO_KEY`/`OPENCODE_API_KEY` and persists state in `~/.pi_cache` |
 | `sn` | Fuzzy Obsidian note search |
 | `count <dir>` | Count files in a directory |
 

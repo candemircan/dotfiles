@@ -1,0 +1,11 @@
+# node22-uv — image used by the sandboxed `sclaude` / `spi` agent aliases.
+#
+# Base: node:22 (Debian; includes python3 + build tools, which agents need for
+# running project code). uv is added as the official, statically-linked binary
+# copied straight out of Astral's own OCI image, so we don't re-package it.
+#
+# Built by install.sh:
+#   Linux : podman build -t node22-uv <this dir>     (→ localhost/node22-uv)
+#   macOS : container build -t node22-uv <this dir>
+FROM docker.io/library/node:22
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
