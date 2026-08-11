@@ -340,6 +340,18 @@ install_common() {
   pi install npm:@tmustier/pi-files-widget --no-approve || warn "pi-files-widget install failed"
   pi install git:github.com/huggingface/pi-llama --no-approve || warn "pi-llama install failed"
 
+  # Agent skills, scoped per agent. `--agent` takes space-separated agent ids
+  # (commas are rejected). Runs after the agents are installed so the skills CLI
+  # can find their skills directories.
+  #
+  # Always pass --agent. A bare `-g` installs into every agent it detects, which
+  # sprays skills into config dirs for agents that are not installed here.
+  info "Installing agent skills..."
+  npx --yes skills add ogulcancelik/herdr --skill herdr -g -y --agent claude-code pi || warn "herdr skill install failed"
+  npx --yes skills add vercel-labs/skills --skill find-skills -g -y --agent claude-code pi || warn "find-skills skill install failed"
+  npx --yes skills add ogulcancelik/agent-skills --skill web-search -g -y --agent pi || warn "web-search skill install failed"
+  npx --yes skills add ogulcancelik/agent-skills --skill preflight -g -y --agent claude-code pi || warn "preflight skill install failed"
+
   # python stuff
   uv tool install ruff
   uv tool install ty

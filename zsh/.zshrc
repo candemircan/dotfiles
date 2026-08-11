@@ -25,6 +25,7 @@ path=(
 export ZSH="$HOME/.oh-my-zsh"
 export ZSH_CUSTOM="${ZSH_CUSTOM:-$ZSH/custom}"
 export ZSH_CACHE_DIR="${ZSH_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh}"
+export CLAUDE_TRANSCRIPT_CAPTURE_SYSTEM_PROMPT=1 # my claude transcript capture
 mkdir -p "$ZSH_CACHE_DIR/completions" 2>/dev/null
 fpath=(
     "$ZSH_CACHE_DIR/completions"
@@ -233,7 +234,3 @@ setopt GLOB_DOTS
 if [[ -o interactive && -t 0 && -t 1 && -r "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
   source "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
-
-
-# Added by Antigravity CLI installer
-export PATH="/Users/candemircan/.local/bin:$PATH"

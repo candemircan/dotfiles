@@ -12,7 +12,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 - `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into Herdr)
 - `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)
 - `ruff/` — `.config/ruff/pyproject.toml` (global Ruff lint defaults)
-- `claude/` —  agent skills (`baklavacutter`, `docments-to-docstrings`) + `.claude/managed-settings.json` (machine-level safety policies)
+- `claude/` —  agent skills (`baklavacutter`, `docments-to-docstrings`) + `.claude/managed-settings.json` (machine-level safety policies) + `.claude/output-styles/KISS.md` (global output style; enabled via `outputStyle` in `~/.claude/settings.json`)
 - `pi/` — `.pi/agent/` (Pi defaults and OpenCode Go model provider)
 - `sandbox/` — `Containerfile` for the `node22-uv` agent sandbox image (node:22 + uv). Not a stow package; built by `install.sh`, so don't add it to the stow loop
 - `git/` — `.gitconfig` (shared Git settings and identity); machine-local overrides go in `~/.gitconfig.local` (not tracked)
@@ -46,7 +46,33 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 
 
 
-Skills from `~/.agent-skills/` are symlinked into Claude, OpenCode, and Pi skills directories.
+## Agent skills
+
+Skills come from two stores, neither tracked in this repo.
+
+`~/.agent-skills/` — hand-maintained skill directories. The `stow.sh` skill loop links **every** one into both `~/.claude/skills/` and `~/.pi/agent/skills/`. This store cannot target a single agent.
+
+`~/.agents/skills/` — skills installed by the `skills` CLI (`npx skills add`), invoked from `install.sh`. Use this store when a skill belongs to only some agents. `--agent` takes space-separated agent ids (`claude-code`, `pi`); commas are rejected.
+
+| Skill | Source | Agents |
+|---|---|---|
+| `herdr` | `ogulcancelik/herdr` | Claude Code + Pi |
+| `find-skills` | `vercel-labs/skills` | Claude Code + Pi |
+| `preflight` | `ogulcancelik/agent-skills` | Claude Code + Pi |
+| `web-search` | `ogulcancelik/agent-skills` | Pi only |
+
+Single-agent installs are copied into that agent's skills directory; multi-agent installs land in `~/.agents/skills/` and are symlinked into each agent. Update with `npx skills update -g`.
+
+**Always pass `--agent`.** A bare `-g` installs into every agent the CLI detects, and detection only tests whether a config directory exists. Leftover directories from uninstalled agents therefore collect stray skills. Herdr has the same problem: it writes agent-state hooks for any agent whose config directory it finds.
+
+Audit the two mechanisms with:
+
+```sh
+herdr integration status          # herdr hooks; fix with integration install/uninstall <agent>
+npx skills ls -g --json           # which agents each skill is installed for
+```
+
+Only `claude` and `pi` should appear as installed. Anything else means a stale config directory under `$HOME` is being detected.
 
 `claude/.claude/managed-settings.json` contains machine-level Claude Code safety policies. `stow.sh` prompts to install it to:
 - macOS: `/Library/Application Support/ClaudeCode/managed-settings.json`
