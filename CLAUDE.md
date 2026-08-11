@@ -12,7 +12,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 - `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into Herdr)
 - `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)
 - `ruff/` — `.config/ruff/pyproject.toml` (global Ruff lint defaults)
-- `claude/` —  agent skills (`baklavacutter`, `docments-to-docstrings`) + `.claude/managed-settings.json` (machine-level safety policies) + `.claude/output-styles/KISS.md` (global output style; enabled via `outputStyle` in `~/.claude/settings.json`)
+- `claude/` —  `.claude/settings.json` (user settings: model, effort, output style, `cleanupPeriodDays`) + `.claude/managed-settings.json` (machine-level safety policies) + `.claude/output-styles/KISS.md` (the `KISS` output style, enabled by `outputStyle` in `settings.json`)
 - `pi/` — `.pi/agent/` (Pi defaults and OpenCode Go model provider)
 - `sandbox/` — `Containerfile` for the `node22-uv` agent sandbox image (node:22 + uv). Not a stow package; built by `install.sh`, so don't add it to the stow loop
 - `git/` — `.gitconfig` (shared Git settings and identity); machine-local overrides go in `~/.gitconfig.local` (not tracked)
@@ -73,6 +73,15 @@ npx skills ls -g --json           # which agents each skill is installed for
 ```
 
 Only `claude` and `pi` should appear as installed. Anything else means a stale config directory under `$HOME` is being detected.
+
+## Agent settings files
+
+`claude/.claude/settings.json` and `pi/.pi/agent/settings.json` are stowed as symlinks, so **both agents write straight into this repo**. Changing a setting in Claude Code or running `pi install` shows up as a `git diff` here. That is intended: it keeps settings version-controlled. Two consequences:
+
+- Both agents rewrite key order on save, so diffs are sometimes pure reordering.
+- `settings.json` holds an absolute `SessionStart` hook path (`/Users/candemircan/.claude/hooks/herdr-agent-state.sh`) written by `herdr integration install claude`. **Do not replace it with `$HOME`.** Claude Code would expand it (hooks with no `args` run through `sh -c`), but herdr matches the literal string: with `$HOME` there, `herdr integration install claude` does not recognise its own entry and appends a second identical hook, so the hook fires twice. On Linux, run `herdr integration install claude` after stowing and let herdr write the correct path.
+
+`stow.sh` backs up a pre-existing real `settings.json` to `settings.json.bak` before it links.
 
 `claude/.claude/managed-settings.json` contains machine-level Claude Code safety policies. `stow.sh` prompts to install it to:
 - macOS: `/Library/Application Support/ClaudeCode/managed-settings.json`

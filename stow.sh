@@ -16,6 +16,7 @@ for f in .zshrc .gitconfig; do
 done
 
 for f in \
+  .claude/settings.json \
   .pi/agent/settings.json \
   .pi/agent/models.json \
   .pi/agent/background-run.json \
