@@ -46,11 +46,28 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 
 
 
+## Shared agent instructions
+
+`claude/.claude/CLAUDE.md` holds the standing rules that apply in every project: writing, code,
+figures, long jobs, delegation via herdr, and how to work with me. One tracked file, two agents:
+
+- Claude Code reads it at `~/.claude/CLAUDE.md`, stowed by the `claude` package.
+- Pi reads it at `~/.pi/agent/AGENTS.md`, symlinked to the same file by `stow.sh`.
+
+Both agents append a project's own `CLAUDE.md` or `AGENTS.md` after the global file, so a project
+can override any rule. Pi loads the first of `AGENTS.override.md`, `AGENTS.md`, `AGENTS.MD`,
+`CLAUDE.md`, `CLAUDE.MD` it finds per directory, so never put two of those names in one directory.
+
 ## Agent skills
 
-Skills come from two stores, neither tracked in this repo.
+Skills come from three stores.
 
-`~/.agent-skills/` — hand-maintained skill directories. The `stow.sh` skill loop links **every** one into both `~/.claude/skills/` and `~/.pi/agent/skills/`. This store cannot target a single agent.
+`agent-skills/` — **tracked in this repo. Add new skills here.** The `stow.sh` skill loop links
+every subdirectory into both `~/.claude/skills/` and `~/.pi/agent/skills/`. It is not a stow
+package, because it does not mirror a path under `$HOME`, so keep it out of the `stow` loop.
+
+`~/.agent-skills/` — hand-maintained skill directories, not tracked. Legacy: prefer `agent-skills/`
+above for anything new. The `stow.sh` skill loop links **every** one into both `~/.claude/skills/` and `~/.pi/agent/skills/`. This store cannot target a single agent.
 
 `~/.agents/skills/` — skills installed by the `skills` CLI (`npx skills add`), invoked from `install.sh`. Use this store when a skill belongs to only some agents. `--agent` takes space-separated agent ids (`claude-code`, `pi`); commas are rejected.
 
@@ -83,7 +100,15 @@ Only `claude` and `pi` should appear as installed. Anything else means a stale c
 
 `stow.sh` backs up a pre-existing real `settings.json` to `settings.json.bak` before it links.
 
-`claude/.claude/managed-settings.json` contains machine-level Claude Code safety policies. `stow.sh` prompts to install it to:
+`claude/.claude/managed-settings.json` contains machine-level Claude Code safety policies.
+
+**Do not add `"disableAllHooks": true` back to it.** Managed settings outrank `settings.json`, so
+that key silently kills the herdr `SessionStart` hook documented above: the hook stays on disk,
+`herdr integration status` still reports `claude: current`, and nothing fires. It was set for
+months without being noticed. The `permissions.deny` list and `disableBypassPermissionsMode` are
+the safety policies; the hook ban was not.
+
+`stow.sh` prompts to install it to:
 - macOS: `/Library/Application Support/ClaudeCode/managed-settings.json`
 - Linux: `/etc/claude-code/managed-settings.json`
 

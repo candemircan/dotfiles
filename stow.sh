@@ -17,6 +17,7 @@ done
 
 for f in \
   .claude/settings.json \
+  .claude/CLAUDE.md \
   .pi/agent/settings.json \
   .pi/agent/models.json \
   .pi/agent/background-run.json \
@@ -26,7 +27,8 @@ for f in \
   .pi/agent/extensions/shell-guard.md \
   .pi/agent/extensions/shell-guard.ts \
   .pi/agent/skills/background-run \
-  .pi/agent/skills/shell-guard
+  .pi/agent/skills/shell-guard \
+  .pi/agent/AGENTS.md
 do
   if [ -f "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
     mv "$HOME/$f" "$HOME/$f.bak"
@@ -69,18 +71,31 @@ remove_generated_skill_links() {
     target=$(readlink "$link")
     case "$target" in
       *"/.agent-skills/"*) rm "$link" ;;
+      *"$DOTFILES_DIR/agent-skills/"*) rm "$link" ;;
     esac
   done
 }
 
+# Two skill stores are linked into both agents:
+#   $DOTFILES_DIR/agent-skills/  tracked here, the one to add new skills to
+#   $HOME/.agent-skills/         untracked, hand-maintained, legacy
+# agent-skills/ is not a stow package: it does not mirror a path under $HOME,
+# so it must stay out of the stow loop above.
 mkdir -p "${SKILL_DIRS[@]}"
 for dest in "${SKILL_DIRS[@]}"; do
   remove_generated_skill_links "$dest"
-  for skill_dir in "$HOME/.agent-skills"/*/; do
-    [ -d "$skill_dir" ] || continue
-    ln -sfn "$skill_dir" "$dest/$(basename "$skill_dir")"
+  for store in "$DOTFILES_DIR/agent-skills" "$HOME/.agent-skills"; do
+    for skill_dir in "$store"/*/; do
+      [ -d "$skill_dir" ] || continue
+      ln -sfn "$skill_dir" "$dest/$(basename "$skill_dir")"
+    done
   done
 done
+
+# Share one instruction file across agents. Claude Code reads ~/.claude/CLAUDE.md
+# (stowed by the claude package); pi reads ~/.pi/agent/AGENTS.md. Both point at the
+# same tracked file, so the standing rules cannot drift apart.
+ln -sfn "$DOTFILES_DIR/claude/.claude/CLAUDE.md" "$HOME/.pi/agent/AGENTS.md"
 
 
 # Claude Code managed settings (machine-level safety policies)
