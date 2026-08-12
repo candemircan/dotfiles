@@ -2,12 +2,20 @@
 
 GNU Stow-based dotfiles repo for macOS and Linux.
 
+## Portability
+
+Approved changes become permanent in this repo, in the same session. Package installs go in
+`install.sh`, symlinks in `stow.sh`, config in the matching stow package, and a line in this
+file. Nothing stays as machine-local state. When a tool keeps its own state outside the stowed
+tree (example: `herdr plugin install` writes to `~/.config/herdr/plugins/`), pin an exact
+version and script the install in `install.sh`; do not leave it as a manual step.
+
 ## Structure
 
 Each top-level directory is a stow package symlinked into `$HOME`:
 
 - `zsh/` — `.zshrc` (Oh My Zsh, fzf, zoxide, starship, aliases, local AI functions) + `.local/bin/` scripts
-- `herdr/` — `.config/herdr/config.toml` (primary terminal workspace manager, prefix `C-a`)
+- `herdr/` — `.config/herdr/config.toml` (primary terminal workspace manager, prefix `C-a`). The pinned `herdr-automatic-rename` plugin (tab auto-naming, `[N]` jump prefixes) is installed by `install.sh` and lives in herdr's own plugin dir, not in this repo
 - `tmux/` — `.tmux.conf` (legacy rollback config, prefix `C-a`, TPM, flexoki dark theme)
 - `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into Herdr)
 - `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)

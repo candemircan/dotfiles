@@ -63,15 +63,9 @@ if [[ -z "$workspace_id" ]]; then
 fi
 
 if [[ -n "$workspace_id" ]]; then
-    first_tab_id=$(
-        herdr tab list --workspace "$workspace_id" 2>/dev/null |
-            jq -r '(.result.tabs // .tabs // [])[0] | .tab_id // .id // empty' 2>/dev/null
-    )
-    if [[ -n "$first_tab_id" ]]; then
-        herdr tab rename "$first_tab_id" agent >/dev/null 2>&1 || true
-    fi
-    herdr tab create --workspace "$workspace_id" --cwd "$selected" --label shell --no-focus >/dev/null 2>&1 || true
-    herdr tab create --workspace "$workspace_id" --cwd "$selected" --label ipython --no-focus >/dev/null 2>&1 || true
-    herdr tab create --workspace "$workspace_id" --cwd "$selected" --label ssh --no-focus >/dev/null 2>&1 || true
+    # Tabs stay unlabeled; the herdr-automatic-rename plugin names them by foreground process.
+    for _ in 1 2 3; do
+        herdr tab create --workspace "$workspace_id" --cwd "$selected" --no-focus >/dev/null 2>&1 || true
+    done
     herdr workspace focus "$workspace_id" >/dev/null 2>&1 || true
 fi

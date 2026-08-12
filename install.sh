@@ -325,6 +325,14 @@ install_common() {
     curl -fsSL https://herdr.dev/install.sh | sh
   fi
 
+  # herdr stores plugins in its own dir outside the stowed tree, so the pinned
+  # install is scripted here rather than tracked as a file. .zshrc sources its
+  # shell hook by glob, which no-ops until this runs.
+  if ! herdr plugin list --json 2>/dev/null | jq -e '.result.plugins[]? | select(.plugin_id=="herdr-automatic-rename")' >/dev/null 2>&1; then
+    info "Installing herdr-automatic-rename plugin (pinned v0.5.0)..."
+    herdr plugin install qu8n/herdr-automatic-rename --ref v0.5.0 --yes || warn "herdr-automatic-rename install failed"
+  fi
+
   # cli agents
   if ! command_exists claude; then
     info "Installing Claude Code..."
