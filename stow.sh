@@ -6,7 +6,7 @@ cd "$(dirname "$0")"
 DOTFILES_DIR="$(pwd)"
 
 # Back up existing configs if they're real files (not symlinks from a previous stow)
-for f in .zshrc .gitconfig; do
+for f in .zshrc .zshenv .gitconfig; do
   if [ -f "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
     mv "$HOME/$f" "$HOME/$f.bak"
     echo "Backed up existing $f to $f.bak"

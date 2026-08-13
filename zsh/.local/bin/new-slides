@@ -1,0 +1,35 @@
+#!/bin/zsh
+# Scaffold a new Quarto reveal.js deck from the tracked template.
+# Usage: new-slides <folder-name> ["Deck title"]
+#
+# Copies dotfiles/templates/presentation into $PRESENTATIONS_DIR/<folder-name>,
+# fills in the title, seeds references.bib from the Zotero master ($BIB_MASTER),
+# and runs git init. $PRESENTATIONS_DIR and $BIB_MASTER come from ~/.zshenv.
+set -eu
+
+template="$HOME/dotfiles/templates/presentation"
+[[ -d "$template" ]] || { print -u2 "template missing: $template"; exit 1; }
+[[ -n "${PRESENTATIONS_DIR:-}" ]] || { print -u2 "PRESENTATIONS_DIR is not set (see ~/.zshenv)"; exit 1; }
+
+name="${1:-}"
+[[ -n "$name" ]] || { print -u2 "usage: new-slides <folder-name> [\"Deck title\"]"; exit 1; }
+title="${2:-$name}"
+
+dest="$PRESENTATIONS_DIR/$name"
+[[ -e "$dest" ]] && { print -u2 "already exists: $dest"; exit 1; }
+
+cp -R "$template" "$dest"
+
+# Replace {{TITLE}} without letting shell metacharacters reach a regex.
+TITLE="$title" perl -0pi -e 's/\{\{TITLE\}\}/$ENV{TITLE}/g' "$dest/slides.qmd" "$dest/README.md"
+
+if [[ -n "${BIB_MASTER:-}" && -f "$BIB_MASTER" ]]; then
+  cp "$BIB_MASTER" "$dest/references.bib"
+  print "references.bib: copied from $BIB_MASTER"
+else
+  : > "$dest/references.bib"
+  print "references.bib: no Zotero master at ${BIB_MASTER:-<unset>}; left empty"
+fi
+
+git -C "$dest" init -q
+print "created $dest"

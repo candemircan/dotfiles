@@ -2,7 +2,6 @@
   "defaultModel": "qwen3.7-plus",
   "defaultProvider": "opencode-go",
   "packages": [
-    "npm:pi-web-access"
   ],
   "defaultThinkingLevel": "high",
   "theme": "dark",

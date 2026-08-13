@@ -1,0 +1,8 @@
+#!/bin/zsh
+# Re-copy the Zotero master .bib into the current deck's references.bib.
+# Run from inside a presentation folder. $BIB_MASTER comes from ~/.zshenv.
+set -eu
+
+[[ -n "${BIB_MASTER:-}" && -f "$BIB_MASTER" ]] || { print -u2 "no Zotero master at ${BIB_MASTER:-<unset>}"; exit 1; }
+cp "$BIB_MASTER" ./references.bib
+print "synced references.bib from $BIB_MASTER"

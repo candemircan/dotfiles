@@ -9,7 +9,7 @@ source ~/.zsh_secrets 2>/dev/null || true
 selected=$(
     { for dir in "$HOME/Projects" \
                  "$HOME/Projects/cpi/ideas" \
-                 "$HOME/Projects/cpi/presentations" \
+                 "$PRESENTATIONS_DIR" \
                  "$HOME/Projects/cpi"; do
         if [[ -d "$dir" ]]; then
           find "$dir" -mindepth 1 -maxdepth 1 -type d

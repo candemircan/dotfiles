@@ -5,11 +5,12 @@ description: "House rules and a verification loop for Can's Quarto reveal.js dec
 
 # Slides
 
-Decks live in `~/Projects/cpi/presentations/`: `automated_science_ng_july_26`, `cpi_feb_23`,
-`cpi_jan_26`, `eml_cpi_retreat_23`, `first_tac_meeting`, `logbook`, `prompt_or_perish`,
-`ringberg_retreat_2026`. Source is `slides.qmd`, `index.qmd` or `meta_learning.qmd`. Figures sit in
-`assets/` or `imgs/`. Three decks carry a `basic-theme.scss`; the rest use `clean-revealjs`
-defaults. Never report slide work as done before Tier 1 passes.
+Decks live in `$PRESENTATIONS_DIR` (resolve with `echo "$PRESENTATIONS_DIR"`, currently
+`~/Projects/cpi/presentations`). List them with `ls "$PRESENTATIONS_DIR"`. Source is `slides.qmd`,
+`index.qmd` or `meta_learning.qmd`. Figures sit in `assets/` or `imgs/`. Some decks carry a
+`basic-theme.scss`; the rest use `clean-revealjs` defaults. Scaffold a new deck with
+`new-slides <folder> ["Title"]`; it copies the tracked template and seeds `references.bib` from the
+Zotero master. Never report slide work as done before Tier 1 passes.
 
 ## House rules
 

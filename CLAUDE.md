@@ -14,7 +14,7 @@ version and script the install in `install.sh`; do not leave it as a manual step
 
 Each top-level directory is a stow package symlinked into `$HOME`:
 
-- `zsh/` — `.zshrc` (Oh My Zsh, fzf, zoxide, starship, aliases, local AI functions) + `.local/bin/` scripts
+- `zsh/` — `.zshrc` (Oh My Zsh, fzf, zoxide, starship, aliases, local AI functions), `.zshenv` (env vars every zsh invocation needs, e.g. `PRESENTATIONS_DIR`, `BIB_MASTER`) + `.local/bin/` scripts
 - `herdr/` — `.config/herdr/config.toml` (primary terminal workspace manager, prefix `C-a`). The pinned `herdr-automatic-rename` plugin (tab auto-naming, `[N]` jump prefixes) is installed by `install.sh` and lives in herdr's own plugin dir, not in this repo
 - `tmux/` — `.tmux.conf` (legacy rollback config, prefix `C-a`, TPM, flexoki dark theme)
 - `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into Herdr)
@@ -37,6 +37,8 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 | `herdr-space-switcher` | fzf over Herdr spaces only; focuses selected space |
 | `herdr-yazi` | Yazi chooser temporary pane; text files open in the previously active Herdr pane |
 | `herdr-init-default` | Starts/attaches Herdr, ensures `default` and `btop` spaces |
+| `new-slides` | Scaffolds a new Quarto deck in `$PRESENTATIONS_DIR` from `templates/presentation/` |
+| `slides-sync-bib` | Re-copies the Zotero master `$BIB_MASTER` over the current deck's `references.bib` |
 
 ### `.zshrc` functions
 
@@ -46,6 +48,36 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 | `sclaude`, `spi` | Sandboxed agents: `srt -- claude/pi` (Anthropic sandbox-runtime, pinned in `install.sh`). Seatbelt on macOS; bubblewrap + socat on Linux (distro packages, srt does not bundle them). Policy in `srt/.srt-settings.json`, stowed to `~/.srt-settings.json` |
 | `sn` | Fuzzy Obsidian note search |
 | `count <dir>` | Count files in a directory |
+
+## Presentations
+
+Quarto reveal.js decks live in `$PRESENTATIONS_DIR` (`~/Projects/cpi/presentations`). Each deck is
+its own git repo and vendors the pinned `grantmcdermott/clean` extension (1.4.1).
+
+`new-slides <folder> ["Title"]` scaffolds a deck from `templates/presentation/`:
+
+- copies the vendored extension, `slides.qmd`, `.gitignore`, and `assets/`,
+- fills the title into `slides.qmd` and `README.md`,
+- seeds `references.bib` from the Zotero master `$BIB_MASTER`, or leaves it empty,
+- runs `git init`.
+
+`slides-sync-bib`, run inside a deck, re-copies `$BIB_MASTER` over `references.bib`.
+
+`templates/` is not a stow package; it does not mirror a path under `$HOME`, so keep it out of the
+`stow` loop. `PRESENTATIONS_DIR` and `BIB_MASTER` are exported from `zsh/.zshenv`, the one file
+sourced by interactive shells, the `#!/bin/zsh` scripts in `.local/bin`, and the agent shell
+snapshot. `stow.sh` backs up a pre-existing real `~/.zshenv` before it links.
+
+### Zotero link
+
+`references.bib` comes from Zotero through the Better BibTeX plugin, exported once and kept current:
+
+1. In Zotero, right-click `My Library` (or a single collection) and choose `Export Library`.
+2. Set format `Better BibTeX`, tick `Keep updated`, save as `~/Zotero/library.bib`.
+3. Better BibTeX rewrites that file on every change. `new-slides` copies it into each new deck.
+
+Citation keys follow the Better BibTeX default (`author + year`). Pin a specific item's key with
+right-click, `Better BibTeX`, `Pin BibTeX key`.
 
 ## Scripts
 
