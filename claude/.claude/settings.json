@@ -1,6 +1,6 @@
 {
   "cleanupPeriodDays": 36500,
-  "model": "opus",
+  "model": "claude-opus-4-8",
   "hooks": {
     "SessionStart": [
       {
