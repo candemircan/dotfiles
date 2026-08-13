@@ -28,7 +28,8 @@ for f in \
   .pi/agent/extensions/shell-guard.ts \
   .pi/agent/skills/background-run \
   .pi/agent/skills/shell-guard \
-  .pi/agent/AGENTS.md
+  .pi/agent/AGENTS.md \
+  .srt-settings.json
 do
   if [ -f "$HOME/$f" ] && [ ! -L "$HOME/$f" ]; then
     mv "$HOME/$f" "$HOME/$f.bak"
@@ -51,7 +52,7 @@ done
 
 # Run GNU Stow. --no-folding keeps parent config directories real so runtime
 # skill symlinks are created in $HOME instead of inside this repository.
-for pkg in zsh tmux herdr helix kitty claude pi git ruff; do
+for pkg in zsh tmux herdr helix kitty claude pi git ruff srt; do
   stow --no-folding -v -R -t "$HOME" "$pkg"
 done
 

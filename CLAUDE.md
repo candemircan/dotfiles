@@ -22,7 +22,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 - `ruff/` — `.config/ruff/pyproject.toml` (global Ruff lint defaults)
 - `claude/` —  `.claude/settings.json` (user settings: model, effort, output style, `cleanupPeriodDays`) + `.claude/managed-settings.json` (machine-level safety policies) + `.claude/output-styles/KISS.md` (the `KISS` output style, enabled by `outputStyle` in `settings.json`)
 - `pi/` — `.pi/agent/` (Pi defaults and OpenCode Go model provider)
-- `sandbox/` — `Containerfile` for the `node22-uv` agent sandbox image (node:22 + uv). Not a stow package; built by `install.sh`, so don't add it to the stow loop
+- `srt/` — `.srt-settings.json` (policy for the `sclaude`/`spi` sandbox wrappers: writes limited to `$PWD`, `/tmp` and the agents' state dirs, secret files unreadable, outbound traffic limited to an allowlist of model APIs, GitHub and package registries)
 - `git/` — `.gitconfig` (shared Git settings and identity); machine-local overrides go in `~/.gitconfig.local` (not tracked)
 
 ### `zsh/.local/bin/` scripts
@@ -43,7 +43,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 | Function | Purpose |
 |---|---|
 | `ai <prompt>` | Run opencode with a prompt |
-| `sclaude`, `spi` | Sandboxed agents — rootless OCI container (`node22-uv` = node:22 + uv, built from `sandbox/Containerfile`; falls back to plain `node:22` if unbuilt): podman on Linux (`:Z` mounts for SELinux), `apple/container` on macOS. Only `$PWD`, `.container_venv` → `.venv`, a shared uv cache (`~/.cache/uv-container`), and agent state are mounted. Claude OAuth persists via `~/.claude`; Pi gets `OPENCODE_GO_KEY`/`OPENCODE_API_KEY` and persists state in `~/.pi_cache` |
+| `sclaude`, `spi` | Sandboxed agents: `srt -- claude/pi` (Anthropic sandbox-runtime, pinned in `install.sh`). Seatbelt on macOS; bubblewrap + socat on Linux (distro packages, srt does not bundle them). Policy in `srt/.srt-settings.json`, stowed to `~/.srt-settings.json` |
 | `sn` | Fuzzy Obsidian note search |
 | `count <dir>` | Count files in a directory |
 
