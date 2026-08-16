@@ -27,3 +27,7 @@
 [user]
 	name = Can Demircan
 	email = cdemircan@tutanota.com
+[lfs "customtransfer.xet"]
+	path = git-xet
+	args = transfer
+	concurrent = true
