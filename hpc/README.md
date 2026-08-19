@@ -56,6 +56,6 @@ It then links the shared configs and the `hpc/` override files, writes
 - tmux and git: prefer the cluster's modules (`module load tmux git`). Add the
   load lines to `~/.hpc.local`, guarded with `command -v module`.
 - kitty, GUI apps, Nerd Fonts: these run on your laptop, not the remote node.
-- srt sandbox, herdr, managed settings: need root or user namespaces.
+- srt sandbox and herdr: need root or user namespaces.
 - `~/.local/bin` helper scripts (sessionizer, obsidian, slides): laptop-specific.
   The tmux binds `C-f`, prefix `i`, and prefix `o` therefore do nothing on HPC.
