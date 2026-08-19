@@ -20,7 +20,7 @@ Each top-level directory is a stow package symlinked into `$HOME`:
 - `kitty/` — `.config/kitty/` (gruvbox dark theme, RobotoMono Nerd Font, boots into Herdr)
 - `helix/` — `.config/helix/` (gruvbox dark, REPL pipe, serpl, LSP config)
 - `ruff/` — `.config/ruff/pyproject.toml` (global Ruff lint defaults)
-- `claude/` —  `.claude/settings.json` (user settings: model, effort, output style, `cleanupPeriodDays`) + `.claude/managed-settings.json` (machine-level safety policies) + `.claude/output-styles/KISS.md` (the `KISS` output style, enabled by `outputStyle` in `settings.json`)
+- `claude/` —  `.claude/settings.json` (user settings: model, effort, output style, `cleanupPeriodDays`, permission allow/deny list, bash timeouts) + `.claude/output-styles/KISS.md` (the `KISS` output style, enabled by `outputStyle` in `settings.json`)
 - `pi/` — `.pi/agent/` (Pi defaults and OpenCode Go model provider)
 - `srt/` — `.srt-settings.json` (policy for the `sclaude`/`spi` sandbox wrappers: writes limited to `$PWD`, `/tmp` and the agents' state dirs, secret files unreadable, outbound traffic limited to an allowlist of model APIs, GitHub and package registries)
 - `git/` — `.gitconfig` (shared Git settings and identity); machine-local overrides go in `~/.gitconfig.local` (not tracked)
@@ -136,6 +136,11 @@ Skills come from three stores.
 every subdirectory into both `~/.claude/skills/` and `~/.pi/agent/skills/`. It is not a stow
 package, because it does not mirror a path under `$HOME`, so keep it out of the `stow` loop.
 
+A tracked skill may keep machine-local reference files out of git. `agent-skills/remote-hpc/`
+ships a generic `SKILL.md` but `.gitignore`s `agent-skills/remote-hpc/clusters/`, whose cluster
+sheets hold login users, account ids, and storage paths. The sheets stay on disk and linked to
+both agents, but never reach this public repo (same rule as `~/.hpc.local`).
+
 `~/.agent-skills/` — hand-maintained skill directories, not tracked. Legacy: prefer `agent-skills/`
 above for anything new. The `stow.sh` skill loop links **every** one into both `~/.claude/skills/` and `~/.pi/agent/skills/`. This store cannot target a single agent.
 
@@ -170,17 +175,16 @@ Only `claude` and `pi` should appear as installed. Anything else means a stale c
 
 `stow.sh` backs up a pre-existing real `settings.json` to `settings.json.bak` before it links.
 
-`claude/.claude/managed-settings.json` contains machine-level Claude Code safety policies.
+There is no `managed-settings.json`; Claude Code runs from `settings.json` alone. The safety
+policies (`permissions.allow`, `permissions.deny`, and the bash-timeout `env`) live in
+`settings.json`. They are advisory, not enforced: an agent can rewrite `settings.json` (it is a
+symlink into this repo), and `--dangerously-skip-permissions` ignores the `deny` list. A managed
+file would outrank and enforce them, but it also outranks the herdr hook and is easy to forget; the
+trade was made for simplicity.
 
-**Do not add `"disableAllHooks": true` back to it.** Managed settings outrank `settings.json`, so
-that key silently kills the herdr `SessionStart` hook documented above: the hook stays on disk,
-`herdr integration status` still reports `claude: current`, and nothing fires. It was set for
-months without being noticed. The `permissions.deny` list and `disableBypassPermissionsMode` are
-the safety policies; the hook ban was not.
-
-`stow.sh` prompts to install it to:
-- macOS: `/Library/Application Support/ClaudeCode/managed-settings.json`
-- Linux: `/etc/claude-code/managed-settings.json`
+**Do not add `"disableAllHooks": true` to `settings.json`.** It silently kills the herdr
+`SessionStart` hook documented above: the hook stays on disk, `herdr integration status` still
+reports `claude: current`, and nothing fires.
 
 ## Adding a new package
 

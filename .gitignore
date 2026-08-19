@@ -4,3 +4,6 @@
 .zsh_secrets
 .DS_Store
 *.log
+
+# HPC cluster sheets: usernames, account ids, storage paths. Keep local, never push.
+agent-skills/remote-hpc/clusters/
