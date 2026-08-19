@@ -1,0 +1,13 @@
+# HPC-only starship config. Linked to ~/.config/starship.toml by install-hpc.sh.
+# The laptop has no starship config, so it keeps starship's defaults untouched.
+# This file overrides only the cloud modules; every other module stays default.
+# username and hostname are kept: over SSH they show which node you are on.
+
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[azure]
+disabled = true

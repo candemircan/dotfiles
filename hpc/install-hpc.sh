@@ -31,12 +31,23 @@ fi
 mkdir -p "$LOCAL_BIN" "$OPT"
 
 # ---------- download helpers ----------
-# Find the download URL of the latest release asset matching a regex.
-gh_asset_url() {
-  curl -fsSL "https://api.github.com/repos/$1/releases/latest" 2>/dev/null \
-    | grep -Po '"browser_download_url": "\K[^"]*' \
+# Resolve the latest release tag via the web redirect (no API, no 60/hr limit).
+# /releases/latest 302-redirects to /releases/tag/<TAG>; read <TAG> off the URL.
+gh_latest_tag() {
+  curl -fsSLI -o /dev/null -w '%{url_effective}' "https://github.com/$1/releases/latest" 2>/dev/null \
+    | sed -E 's#.*/tag/##' || true
+}
+
+# Find a release asset URL matching a regex, using the web endpoints only.
+# The API is rate-limited per IP (60/hr), which HPC login nodes share and exhaust.
+gh_asset_url() { # repo  asset-regex
+  local tag; tag="$(gh_latest_tag "$1")"
+  [ -n "$tag" ] || return 0
+  curl -fsSL "https://github.com/$1/releases/expanded_assets/$tag" 2>/dev/null \
+    | grep -oE "/$1/releases/download/[^\"]+" \
     | grep -E "$2" \
-    | head -n1 || true
+    | head -n1 \
+    | sed 's#^#https://github.com#' || true
 }
 
 # Download an archive, extract one binary from it, install it to ~/.local/bin.
@@ -163,6 +174,7 @@ link_configs() {
   link_one "$DOTFILES_DIR/helix/.config/helix/config.toml"    "$HOME/.config/helix/config.toml"
   link_one "$DOTFILES_DIR/helix/.config/helix/languages.toml" "$HOME/.config/helix/languages.toml"
   link_one "$DOTFILES_DIR/ruff/.config/ruff/pyproject.toml"   "$HOME/.config/ruff/pyproject.toml"
+  link_one "$DOTFILES_DIR/hpc/starship.toml"                  "$HOME/.config/starship.toml"
 }
 
 # ---------- machine-local values (untracked) ----------

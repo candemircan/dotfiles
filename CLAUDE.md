@@ -106,7 +106,8 @@ the local files are absent there:
 The `hpc/` layer: `.zshenv.local` moves caches (`XDG_CACHE_HOME`, `UV_CACHE_DIR`, `PIP_CACHE_DIR`,
 `HF_HOME`) off the home quota onto `$DOTFILES_CACHE_BASE`; `.zshrc.local` adds SLURM aliases;
 `.tmux.conf.local` sets prefix `C-b` (so a nested tmux does not clash with the laptop's `C-a`) and
-OSC 52 clipboard.
+OSC 52 clipboard; `starship.toml` disables the cloud modules that SSH sessions trigger. The laptop
+has no starship config, so it keeps starship's defaults.
 
 `~/.hpc.local` is the machine-local file, **not tracked** (like `~/.gitconfig.local`). It sets
 `DOTFILES_CACHE_BASE` (the scratch path) and any guarded `module load` lines. The installer writes

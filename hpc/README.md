@@ -34,6 +34,7 @@ It then links the shared configs and the `hpc/` override files, writes
 | `~/.zshrc.local` -> `hpc/.zshrc.local` | SLURM aliases |
 | `~/.tmux.conf` -> `tmux/.tmux.conf` | shared tmux; sources `~/.tmux.conf.local` last |
 | `~/.tmux.conf.local` -> `hpc/.tmux.conf.local` | prefix `C-b`, OSC 52 clipboard |
+| `~/.config/starship.toml` -> `hpc/starship.toml` | disables the cloud modules (SSH shows extra segments) |
 | `~/.hpc.local` | machine-local values, **not tracked** (scratch path, module loads) |
 
 ## The real HPC traps
