@@ -1,0 +1,7 @@
+# HPC interactive extras. Symlinked to ~/.zshrc.local, sourced last by ~/.zshrc
+# in interactive shells. These assume SLURM; edit or remove per cluster.
+
+alias sq='squeue --me'
+alias si='sinfo'
+alias sc='scancel'
+alias sacct='sacct --format=JobID,JobName%25,State,Elapsed,MaxRSS,NodeList'

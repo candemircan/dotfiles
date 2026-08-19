@@ -136,13 +136,20 @@ pdftocairo -svg in.pdf out.svg
 
 ## Tier 3: no rendered PDF
 
-This machine has no headless browser: no chromium, no Chrome, no decktape. So `quarto render --to
-pdf` cannot produce a PDF for a reveal.js deck, and Tier 2 cannot be automated. Run Tier 1, then
-pick one:
+Quarto has no `render` command that turns a reveal.js deck into a slide PDF. `quarto render --to
+pdf` builds a LaTeX document through xelatex, not slides. So Tier 2 cannot be automated with
+`quarto render`. Run Tier 1, then ask Can to export the deck once from the browser print view
+(append `?print-pdf` to the deck URL, print to PDF, landscape, no margins). Use Tier 2 from then on.
 
-- Ask Can to export the deck to PDF once from the browser print view, then use Tier 2 from then on.
-- Tell him that `quarto install tool chromium` would make Tier 2 fully automatic. He has not
-  installed it. Do not install it yourself.
+A headless browser does not change this. `quarto install chrome-headless-shell` (the tool that
+replaced the deprecated `quarto install chromium` in Quarto 1.9) only rasterizes Mermaid and
+Graphviz diagrams for print formats like PDF and DOCX. It does not export slides. Driving the
+browser by hand on `slides.html?print-pdf` prints a scrolling page in letter portrait, not
+paginated slides. `decktape` would automate the export, but it is not installed. Ask Can before you
+install it.
+
+`quarto` fails inside the `sclaude` sandbox: `sysctl` is blocked, so quarto reports "unrecognized
+architecture". Run any render outside the sandbox.
 
 ## Reporting
 

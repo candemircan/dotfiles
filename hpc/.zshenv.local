@@ -1,0 +1,15 @@
+# HPC env layer. Symlinked to ~/.zshenv.local, sourced last by ~/.zshenv on
+# every zsh invocation (interactive shells, scripts, agents).
+
+# Machine-specific values (scratch path, module loads) live in ~/.hpc.local,
+# which is NOT tracked. install-hpc.sh writes it. Keep host paths out of the repo.
+[ -f "$HOME/.hpc.local" ] && source "$HOME/.hpc.local"
+
+# Move caches off the home quota. HPC home dirs are small; scratch is large.
+# Base comes from ~/.hpc.local, then the cluster's $SCRATCH, then $HOME.
+: "${DOTFILES_CACHE_BASE:=${SCRATCH:-$HOME}}"
+export XDG_CACHE_HOME="$DOTFILES_CACHE_BASE/.cache"
+export UV_CACHE_DIR="$XDG_CACHE_HOME/uv"
+export PIP_CACHE_DIR="$XDG_CACHE_HOME/pip"
+# HF_HOME covers the hub, datasets, and tokens. Other HF_* paths derive from it.
+export HF_HOME="$XDG_CACHE_HOME/huggingface"

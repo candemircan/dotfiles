@@ -1,0 +1,17 @@
+# HPC tmux overrides. Symlinked to ~/.tmux.conf.local, sourced last by
+# ~/.tmux.conf (via 'source-file -q'). Overrides win because they load last.
+
+# Use C-b on the cluster so a nested tmux inside your local (C-a) tmux does not
+# collide. The base config sets C-a; these three lines flip it back to C-b.
+set -g prefix C-b
+unbind C-a
+bind C-b send-prefix
+
+# Clipboard over SSH via OSC 52. Works when the local terminal supports it
+# (kitty does). Copies from a remote tmux then reach the local system clipboard.
+set -g set-clipboard on
+bind -T copy-mode-vi y send -X copy-selection-and-cancel
+
+# The base yazi popup calls a helper script that the HPC profile does not link.
+# Rebind it to run yazi directly (installed by install-hpc.sh).
+bind y display-popup -w 90% -h 90% -d '#{pane_current_path}' -E "yazi"

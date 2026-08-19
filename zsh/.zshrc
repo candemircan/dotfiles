@@ -165,3 +165,9 @@ fi
 for _f in ${HOME}/.config/herdr/plugins/github/herdr-automatic-rename-*/shell/hook.zsh(N); do
   source $_f; break
 done
+
+# opencode
+export PATH="$HOME/.opencode/bin:$PATH"
+
+# Machine-local interactive layer (HPC aliases, etc). Absent on the laptop.
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

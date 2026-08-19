@@ -83,6 +83,35 @@ right-click, `Better BibTeX`, `Pin BibTeX key`.
 
 - `install.sh` — Full bootstrap: installs brew, tools, agents, plugins, then runs `stow.sh`.
 - `stow.sh` — Symlinks all packages, wires agent skills, and shares instructions across agents.
+- `hpc/install-hpc.sh` — No-sudo bootstrap for a login-node HPC account. See "HPC profile".
+
+## HPC profile
+
+`hpc/` holds a no-sudo, no-package-manager subset for a shared cluster. It is **not a stow
+package** (it does not mirror a path under `$HOME`), so keep it out of the `stow` loop, like
+`agent-skills/` and `templates/`.
+
+`hpc/install-hpc.sh` installs user-space tools into `~/.local/bin` (uv/ruff/ty, starship, zoxide,
+fzf, ripgrep, fd, bat, delta, jq, lazygit, yazi, helix, Oh My Zsh, TPM), then symlinks the shared
+`zsh/`, `tmux/`, and `git/` configs plus the `hpc/` override layer. One source of truth: HPC reuses
+the real configs and layers cluster-only overrides that load last.
+
+The override mechanism is three additive hooks in the shared configs, inert on the laptop because
+the local files are absent there:
+
+- `zsh/.zshenv` sources `~/.zshenv.local` last, and guards `~/.cargo/env` with `[ -f ]`.
+- `zsh/.zshrc` sources `~/.zshrc.local` last.
+- `tmux/.tmux.conf` runs `source-file -q ~/.tmux.conf.local` last.
+
+The `hpc/` layer: `.zshenv.local` moves caches (`XDG_CACHE_HOME`, `UV_CACHE_DIR`, `PIP_CACHE_DIR`,
+`HF_HOME`) off the home quota onto `$DOTFILES_CACHE_BASE`; `.zshrc.local` adds SLURM aliases;
+`.tmux.conf.local` sets prefix `C-b` (so a nested tmux does not clash with the laptop's `C-a`) and
+OSC 52 clipboard.
+
+`~/.hpc.local` is the machine-local file, **not tracked** (like `~/.gitconfig.local`). It sets
+`DOTFILES_CACHE_BASE` (the scratch path) and any guarded `module load` lines. The installer writes
+it. `chsh` is often disabled on HPC, so the installer instead appends a guarded `exec zsh` block to
+`~/.bash_profile`; it fires only for interactive shells, so batch jobs stay in bash.
 
 
 
