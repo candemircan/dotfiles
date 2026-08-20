@@ -133,6 +133,8 @@ prompt_new_tab_name = false
 pane_borders = true
 pane_gaps = false
 accent = "#205ea6"
+sidebar_collapsed_mode = "hidden"
+hide_tab_bar_when_single_tab = true
 
 agent_panel_sort = "spaces"
 show_agent_labels_on_pane_borders = true
